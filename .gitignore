@@ -67,3 +67,30 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Intel Quartus generated database / locks
+db/
+
+# Platform Designer / Qsys generated artifacts
+RadonMCUSystemDesign/.qsys_edit/
+RadonMCUSystemDesign/MCUSystemDesign/
+
+# Quartus build artifacts
+incremental_db/
+output_files/
+
+# Nios II / Eclipse workspace metadata
+SoftwareExamplesForRadonMCU/.metadata/
+SoftwareExamplesForRadonMCU/RemoteSystemsTempFiles/
+
+# Quartus/Qsys local editor cache at repository root
+.qsys_edit/
+*.qws
+
+# Nios II app build outputs
+SoftwareExamplesForRadonMCU/RadonHelloWorld/*.elf
+SoftwareExamplesForRadonMCU/RadonHelloWorld/*.map
+SoftwareExamplesForRadonMCU/RadonHelloWorld/*.objdump
+
+# Nios II BSP rebuild marker
+SoftwareExamplesForRadonMCU/RadonHelloWorld_bsp/.force_rebuild_all
