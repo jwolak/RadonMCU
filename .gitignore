@@ -78,3 +78,7 @@ RadonMCUSystemDesign/MCUSystemDesign/
 # Quartus build artifacts
 incremental_db/
 output_files/
+
+# Nios II / Eclipse workspace metadata
+SoftwareExamplesForRadonMCU/.metadata/
+SoftwareExamplesForRadonMCU/RemoteSystemsTempFiles/
