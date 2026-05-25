@@ -18,7 +18,7 @@
 
 int main()
 {
-  printf("Hello from Nios II!\n");
+  printf("Hello from Radon MCU!\n");
 
   return 0;
 }
