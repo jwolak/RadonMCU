@@ -85,6 +85,7 @@ SoftwareExamplesForRadonMCU/RemoteSystemsTempFiles/
 
 # Quartus/Qsys local editor cache at repository root
 .qsys_edit/
+*.qws
 
 # Nios II app build outputs
 SoftwareExamplesForRadonMCU/RadonHelloWorld/*.elf
