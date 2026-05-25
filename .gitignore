@@ -70,3 +70,7 @@ Testing/
 
 # Intel Quartus generated database / locks
 db/
+
+# Platform Designer / Qsys generated artifacts
+RadonMCUSystemDesign/.qsys_edit/
+RadonMCUSystemDesign/MCUSystemDesign/
