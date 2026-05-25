@@ -5,11 +5,11 @@
  version="1.0"
  fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2026.05.25.17:55:24 -->
+ <!-- 2026.05.25.18:41:31 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1779724524</value>
+  <value>1779727291</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -3918,7 +3918,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dataSlaveMapParam">
    <type>java.lang.String</type>
-   <value><![CDATA[<address-map><slave name='RAM.s1' start='0x8000' end='0x10000' type='altera_avalon_onchip_memory2.s1' /><slave name='CPU.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='JTAG_UART.avalon_jtag_slave' start='0x11010' end='0x11018' type='altera_avalon_jtag_uart.avalon_jtag_slave' /><slave name='CPU_ID.control_slave' start='0x11018' end='0x11020' type='altera_avalon_sysid_qsys.control_slave' /></address-map>]]></value>
+   <value><![CDATA[<address-map><slave name='RAM.s1' start='0x8000' end='0x10000' type='altera_avalon_onchip_memory2.s1' /><slave name='CPU.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='CPU_ID.control_slave' start='0x11010' end='0x11018' type='altera_avalon_sysid_qsys.control_slave' /><slave name='JTAG_UART.avalon_jtag_slave' start='0x11018' end='0x11020' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -4589,7 +4589,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>JTAG_UART</moduleName>
     <slaveName>avalon_jtag_slave</slaveName>
     <name>JTAG_UART.avalon_jtag_slave</name>
-    <baseAddress>69648</baseAddress>
+    <baseAddress>69656</baseAddress>
     <span>8</span>
    </memoryBlock>
    <memoryBlock>
@@ -4597,7 +4597,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>CPU_ID</moduleName>
     <slaveName>control_slave</slaveName>
     <name>CPU_ID.control_slave</name>
-    <baseAddress>69656</baseAddress>
+    <baseAddress>69648</baseAddress>
     <span>8</span>
    </memoryBlock>
    <memoryBlock>
@@ -5538,11 +5538,11 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <assignment>
    <name>embeddedsw.CMacro.ID</name>
-   <value>0</value>
+   <value>1879048192</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1779724524</value>
+   <value>1779727291</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -5558,11 +5558,11 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.id</name>
-   <value>0</value>
+   <value>1879048192</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1779724524</value>
+   <value>1779727291</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -5570,7 +5570,7 @@ the requested settings for a module instance. -->
   </assignment>
   <parameter name="id">
    <type>int</type>
-   <value>0</value>
+   <value>1879048192</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -5578,7 +5578,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1779724524</value>
+   <value>1779727291</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -7666,7 +7666,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x00011010</value>
+   <value>0x00011018</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -7717,7 +7717,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x00011018</value>
+   <value>0x00011010</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
