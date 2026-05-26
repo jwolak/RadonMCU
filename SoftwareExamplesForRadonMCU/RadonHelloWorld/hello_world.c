@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define LED_DELAY 100000
+
 int main()
 {
   alt_putstr("Hello from Radon MCU!\n");
@@ -34,42 +36,8 @@ int main()
   {
     uint32_t led_value = knight_rider_light.get_led_value(&knight_rider_light);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
-    alt_busy_sleep(200000);
+    alt_busy_sleep(LED_DELAY);
   }
-
-  // uint32_t led_value = 0x1;
-  // int8_t direction = 1;
-
-  // while (1)
-  // {
-  //   IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
-  //   alt_busy_sleep(200000);
-
-  //   if (direction > 0)
-  //   {
-  //     if (led_value == 0x8)
-  //     {
-  //       direction = -1;
-  //       led_value >>= 1;
-  //     }
-  //     else
-  //     {
-  //       led_value <<= 1;
-  //     }
-  //   }
-  //   else
-  //   {
-  //     if (led_value == 0x1)
-  //     {
-  //       direction = 1;
-  //       led_value <<= 1;
-  //     }
-  //     else
-  //     {
-  //       led_value >>= 1;
-  //     }
-  //   }
-  // }
 
   return 0;
 }

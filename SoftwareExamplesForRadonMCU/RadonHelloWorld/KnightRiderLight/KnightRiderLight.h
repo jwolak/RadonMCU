@@ -30,6 +30,9 @@
  *
  */
 
+#ifndef __KNIGHTRIDERLIGHT_H_
+#define __KNIGHTRIDERLIGHT_H_
+
 #include <stdint.h>
 
 struct KnightRiderLight
@@ -42,3 +45,5 @@ extern const struct KnightRiderLightClass
 {
   struct KnightRiderLight (*new)();
 } KnightRiderLight;
+
+#endif /* __KNIGHTRIDERLIGHT_H_ */

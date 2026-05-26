@@ -65,8 +65,13 @@ uint32_t get_led_value(struct KnightRiderLight *this)
   return led_value;
 }
 
-static struct KnightRiderLight newKnightRiderLight = {return (struct KnightRiderLight){
-    .get_led_value = get_led_value,
-};
+static struct KnightRiderLight newKnightRiderLight(void)
+{
+  return (struct KnightRiderLight){
+      .get_led_value = get_led_value,
+  };
 }
-const struct KnightRiderLightClass KnightRiderLight = {.new = &newKnightRiderLight};
+
+const struct KnightRiderLightClass KnightRiderLight = {
+    .new = newKnightRiderLight,
+};
