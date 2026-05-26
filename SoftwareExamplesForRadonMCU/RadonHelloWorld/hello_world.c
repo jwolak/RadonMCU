@@ -18,8 +18,10 @@
 #include "sys/alt_stdio.h"
 #include "sys/alt_sys_wrappers.h"
 #include "altera_avalon_pio_regs.h"
+#include <unistd.h>
 
 #include "KnightRiderLight/KnightRiderLight.h"
+#include "equinios.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -29,6 +31,7 @@
 int main()
 {
   alt_putstr("Hello from Radon MCU!\n");
+  log_set_level(LOG_LEVEL_DEBUG);
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();
 

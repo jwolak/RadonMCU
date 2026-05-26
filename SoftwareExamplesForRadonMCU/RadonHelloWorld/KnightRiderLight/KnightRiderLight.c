@@ -31,6 +31,7 @@
  */
 
 #include "KnightRiderLight.h"
+#include "equinios.h"
 
 uint32_t get_led_value(struct KnightRiderLight *this)
 {
@@ -62,11 +63,15 @@ uint32_t get_led_value(struct KnightRiderLight *this)
     }
   }
 
+  LOGD("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
+
   return led_value;
 }
 
 static struct KnightRiderLight newKnightRiderLight(void)
 {
+  LOGI("KnightRiderLight initialized");
+
   return (struct KnightRiderLight){
       .get_led_value = get_led_value,
   };
