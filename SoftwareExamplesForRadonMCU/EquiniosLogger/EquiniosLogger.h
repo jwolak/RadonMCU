@@ -33,12 +33,15 @@
 #ifndef __EQUINIOSLOGGER_H_
 #define __EQUINIOSLOGGER_H_
 
+#include <stdarg.h>
+
 #include "EquiniosTypes.h"
 
 struct EquiniosLogger
 {
   /* public members */
   void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
+  void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
   void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
 };
 

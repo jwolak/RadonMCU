@@ -44,24 +44,31 @@ static void set_log_level(struct EquiniosLogger *this, log_level_t level)
   g_log_level = level;
 }
 
-static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
+static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
+                       va_list args)
 {
-  va_list args;
-
   (void)this;
   if (level > g_log_level)
   {
     return;
   }
 
-  va_start(args, fmt);
   vprintf(fmt, args);
-  va_end(args);
   printf("\r\n");
+}
+
+static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
+{
+  va_list args;
+
+  va_start(args, fmt);
+  this->log_vwrite(this, level, fmt, args);
+  va_end(args);
 }
 
 static struct EquiniosLogger g_instance = {
     .set_log_level = set_log_level,
+    .log_vwrite = log_vwrite,
     .log_write = log_write,
 };
 
