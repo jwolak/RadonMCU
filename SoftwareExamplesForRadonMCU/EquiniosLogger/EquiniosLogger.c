@@ -36,18 +36,22 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#if defined(__GNUC__) || defined(__clang__)
+#define EQUINIOS_UNUSED __attribute__((unused))
+#else
+#define EQUINIOS_UNUSED
+#endif
+
 static log_level_t g_log_level = LOG_LEVEL_INFO;
 
-static void set_log_level(struct EquiniosLogger *this, log_level_t level)
+static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level)
 {
-  (void)this;
   g_log_level = level;
 }
 
-static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
-                       va_list args)
+static void log_vwrite(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level,
+                       const char *fmt, va_list args)
 {
-  (void)this;
   if (level > g_log_level)
   {
     return;
