@@ -3,15 +3,7 @@
 
 #include <stdarg.h>
 
-typedef enum
-{
-  LOG_LEVEL_CRITICAL = 0,
-  LOG_LEVEL_ERROR = 1,
-  LOG_LEVEL_WARNING = 2,
-  LOG_LEVEL_INFO = 3,
-  LOG_LEVEL_DEBUG = 4,
-  LOG_LEVEL_TRACE = 5,
-} log_level_t;
+#include "EquiniosTypes.h"
 
 void log_set_level(log_level_t level);
 
