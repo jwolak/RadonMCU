@@ -34,21 +34,48 @@
 #include "EquiniosLogger.h"
 
 #include <stdio.h>
+#include <stdarg.h>
 
-void set_log_level(struct EquiniosLogger *this, log_level_t level)
+static log_level_t g_log_level = LOG_LEVEL_INFO;
+
+static void set_log_level(struct EquiniosLogger *this, log_level_t level)
 {
+  (void)this;
+  g_log_level = level;
 }
 
-void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
+static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
 {
+  va_list args;
+
+  (void)this;
+  if (level > g_log_level)
+  {
+    return;
+  }
+
+  va_start(args, fmt);
+  vprintf(fmt, args);
+  va_end(args);
+  printf("\r\n");
+}
+
+static struct EquiniosLogger g_instance = {
+    .set_log_level = set_log_level,
+    .log_write = log_write,
+};
+
+static struct EquiniosLogger *instanceEquiniosLogger(void)
+{
+  return &g_instance;
 }
 
 static struct EquiniosLogger newEquiniosLogger(void)
 {
-  return (struct EquiniosLogger){
-      .set_log_level = set_log_level,
-      .log_write = log_write,
-  };
+  return *instanceEquiniosLogger();
 }
 
-const struct EquiniosLoggerClass EquiniosLogger = {.new = newEquiniosLogger};
+const struct EquiniosLoggerClass EquiniosLogger = {
+    .instance = instanceEquiniosLogger,
+    .new = newEquiniosLogger,
+};

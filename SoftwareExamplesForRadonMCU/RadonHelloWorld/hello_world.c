@@ -32,6 +32,7 @@ int main()
 {
   alt_putstr("Hello from Radon MCU!\n");
   log_set_level(LOG_LEVEL_DEBUG);
+  LOGI("EquiniosLogger singleton ready");
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();
 
