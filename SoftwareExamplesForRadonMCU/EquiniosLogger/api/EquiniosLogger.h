@@ -30,63 +30,28 @@
  *
  */
 
-#include "EquiniosTypes.h"
-#include "EquiniosLogger.h"
+#ifndef __EQUINIOSLOGGER_H_
+#define __EQUINIOSLOGGER_H_
 
-#include <stdio.h>
 #include <stdarg.h>
 
-#if defined(__GNUC__) || defined(__clang__)
-#define EQUINIOS_UNUSED __attribute__((unused))
-#else
-#define EQUINIOS_UNUSED
-#endif
+#include "EquiniosTypes.h"
 
-static log_level_t g_log_level = LOG_LEVEL_INFO;
-
-static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level)
+struct EquiniosLogger
 {
-  g_log_level = level;
-}
-
-static void log_vwrite(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level,
-                       const char *fmt, va_list args)
-{
-  if (level > g_log_level)
-  {
-    return;
-  }
-
-  vprintf(fmt, args);
-  printf("\r\n");
-}
-
-static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
-{
-  va_list args;
-
-  va_start(args, fmt);
-  this->log_vwrite(this, level, fmt, args);
-  va_end(args);
-}
-
-static struct EquiniosLogger g_instance = {
-    .set_log_level = set_log_level,
-    .log_vwrite = log_vwrite,
-    .log_write = log_write,
+  /* public members */
+  void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
+  void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
+  void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
 };
 
-static struct EquiniosLogger *instanceEquiniosLogger(void)
+extern const struct EquiniosLoggerClass
 {
-  return &g_instance;
-}
+  /* Returns a pointer to a single global logger instance. */
+  struct EquiniosLogger *(*instance)(void);
 
-static struct EquiniosLogger newEquiniosLogger(void)
-{
-  return *instanceEquiniosLogger();
-}
+  /* Compatibility factory: returns a copy of the singleton interface table. */
+  struct EquiniosLogger (*new)();
+} EquiniosLogger;
 
-const struct EquiniosLoggerClass EquiniosLogger = {
-    .instance = instanceEquiniosLogger,
-    .new = newEquiniosLogger,
-};
+#endif /* __EQUINIOSLOGGER_H_ */

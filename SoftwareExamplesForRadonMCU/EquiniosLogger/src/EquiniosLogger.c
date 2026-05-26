@@ -30,17 +30,63 @@
  *
  */
 
-#ifndef __EQUINIOSTYPES_H_
-#define __EQUINIOSTYPES_H_
+#include "EquiniosTypes.h"
+#include "EquiniosLogger.h"
 
-typedef enum
+#include <stdio.h>
+#include <stdarg.h>
+
+#if defined(__GNUC__) || defined(__clang__)
+#define EQUINIOS_UNUSED __attribute__((unused))
+#else
+#define EQUINIOS_UNUSED
+#endif
+
+static log_level_t g_log_level = LOG_LEVEL_INFO;
+
+static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level)
 {
-  LOG_LEVEL_CRITICAL = 0,
-  LOG_LEVEL_ERROR = 1,
-  LOG_LEVEL_WARNING = 2,
-  LOG_LEVEL_INFO = 3,
-  LOG_LEVEL_DEBUG = 4,
-  LOG_LEVEL_TRACE = 5,
-} log_level_t;
+  g_log_level = level;
+}
 
-#endif /* __EQUINIOSTYPES_H_ */
+static void log_vwrite(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level,
+                       const char *fmt, va_list args)
+{
+  if (level > g_log_level)
+  {
+    return;
+  }
+
+  vprintf(fmt, args);
+  printf("\r\n");
+}
+
+static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
+{
+  va_list args;
+
+  va_start(args, fmt);
+  this->log_vwrite(this, level, fmt, args);
+  va_end(args);
+}
+
+static struct EquiniosLogger g_instance = {
+    .set_log_level = set_log_level,
+    .log_vwrite = log_vwrite,
+    .log_write = log_write,
+};
+
+static struct EquiniosLogger *instanceEquiniosLogger(void)
+{
+  return &g_instance;
+}
+
+static struct EquiniosLogger newEquiniosLogger(void)
+{
+  return *instanceEquiniosLogger();
+}
+
+const struct EquiniosLoggerClass EquiniosLogger = {
+    .instance = instanceEquiniosLogger,
+    .new = newEquiniosLogger,
+};

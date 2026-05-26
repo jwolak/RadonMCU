@@ -30,28 +30,17 @@
  *
  */
 
-#ifndef __EQUINIOSLOGGER_H_
-#define __EQUINIOSLOGGER_H_
+#ifndef __EQUINIOSTYPES_H_
+#define __EQUINIOSTYPES_H_
 
-#include <stdarg.h>
-
-#include "EquiniosTypes.h"
-
-struct EquiniosLogger
+typedef enum
 {
-  /* public members */
-  void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
-  void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
-  void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
-};
+  LOG_LEVEL_CRITICAL = 0,
+  LOG_LEVEL_ERROR = 1,
+  LOG_LEVEL_WARNING = 2,
+  LOG_LEVEL_INFO = 3,
+  LOG_LEVEL_DEBUG = 4,
+  LOG_LEVEL_TRACE = 5,
+} log_level_t;
 
-extern const struct EquiniosLoggerClass
-{
-  /* Returns a pointer to a single global logger instance. */
-  struct EquiniosLogger *(*instance)(void);
-
-  /* Compatibility factory: returns a copy of the singleton interface table. */
-  struct EquiniosLogger (*new)();
-} EquiniosLogger;
-
-#endif /* __EQUINIOSLOGGER_H_ */
+#endif /* __EQUINIOSTYPES_H_ */
