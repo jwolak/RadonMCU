@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'RadonMCUSystemDesign'
  * SOPC Builder design path: C:/Users/jwolak/Documents/FPGA/repositories/RadonMCU/RadonMCUSystemDesign/RadonMCUSystemDesign.sopcinfo
  *
- * Generated: Mon May 25 18:46:26 CEST 2026
+ * Generated: Tue May 26 14:20:29 CEST 2026
  */
 
 /*
@@ -61,7 +61,7 @@
  */
 
 #define ALT_MODULE_CLASS_CLK_PLL altpll
-#define CLK_PLL_BASE 0x11000
+#define CLK_PLL_BASE 0x11020
 #define CLK_PLL_IRQ -1
 #define CLK_PLL_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define CLK_PLL_NAME "/dev/CLK_PLL"
@@ -148,13 +148,13 @@
  */
 
 #define ALT_MODULE_CLASS_CPU_ID altera_avalon_sysid_qsys
-#define CPU_ID_BASE 0x11010
+#define CPU_ID_BASE 0x11030
 #define CPU_ID_ID 1879048192
 #define CPU_ID_IRQ -1
 #define CPU_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define CPU_ID_NAME "/dev/CPU_ID"
 #define CPU_ID_SPAN 8
-#define CPU_ID_TIMESTAMP 1779727291
+#define CPU_ID_TIMESTAMP 1779796128
 #define CPU_ID_TYPE "altera_avalon_sysid_qsys"
 
 
@@ -165,6 +165,7 @@
 
 #define __ALTERA_AVALON_JTAG_UART
 #define __ALTERA_AVALON_ONCHIP_MEMORY2
+#define __ALTERA_AVALON_PIO
 #define __ALTERA_AVALON_SYSID_QSYS
 #define __ALTERA_NIOS2_GEN2
 #define __ALTPLL
@@ -176,7 +177,7 @@
  */
 
 #define ALT_MODULE_CLASS_JTAG_UART altera_avalon_jtag_uart
-#define JTAG_UART_BASE 0x11018
+#define JTAG_UART_BASE 0x11038
 #define JTAG_UART_IRQ 0
 #define JTAG_UART_IRQ_INTERRUPT_CONTROLLER_ID 0
 #define JTAG_UART_NAME "/dev/JTAG_UART"
@@ -186,6 +187,33 @@
 #define JTAG_UART_TYPE "altera_avalon_jtag_uart"
 #define JTAG_UART_WRITE_DEPTH 64
 #define JTAG_UART_WRITE_THRESHOLD 8
+
+
+/*
+ * PIO configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_PIO altera_avalon_pio
+#define PIO_BASE 0x11000
+#define PIO_BIT_CLEARING_EDGE_REGISTER 0
+#define PIO_BIT_MODIFYING_OUTPUT_REGISTER 1
+#define PIO_CAPTURE 0
+#define PIO_DATA_WIDTH 4
+#define PIO_DO_TEST_BENCH_WIRING 0
+#define PIO_DRIVEN_SIM_VALUE 0
+#define PIO_EDGE_TYPE "NONE"
+#define PIO_FREQ 50000000
+#define PIO_HAS_IN 0
+#define PIO_HAS_OUT 1
+#define PIO_HAS_TRI 0
+#define PIO_IRQ -1
+#define PIO_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define PIO_IRQ_TYPE "NONE"
+#define PIO_NAME "/dev/PIO"
+#define PIO_RESET_VALUE 10
+#define PIO_SPAN 32
+#define PIO_TYPE "altera_avalon_pio"
 
 
 /*
@@ -233,19 +261,19 @@
 #define ALT_NUM_INTERNAL_INTERRUPT_CONTROLLERS 1
 #define ALT_NUM_INTERRUPT_CONTROLLERS 1
 #define ALT_STDERR "/dev/JTAG_UART"
-#define ALT_STDERR_BASE 0x11018
+#define ALT_STDERR_BASE 0x11038
 #define ALT_STDERR_DEV JTAG_UART
 #define ALT_STDERR_IS_JTAG_UART
 #define ALT_STDERR_PRESENT
 #define ALT_STDERR_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDIN "/dev/JTAG_UART"
-#define ALT_STDIN_BASE 0x11018
+#define ALT_STDIN_BASE 0x11038
 #define ALT_STDIN_DEV JTAG_UART
 #define ALT_STDIN_IS_JTAG_UART
 #define ALT_STDIN_PRESENT
 #define ALT_STDIN_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDOUT "/dev/JTAG_UART"
-#define ALT_STDOUT_BASE 0x11018
+#define ALT_STDOUT_BASE 0x11038
 #define ALT_STDOUT_DEV JTAG_UART
 #define ALT_STDOUT_IS_JTAG_UART
 #define ALT_STDOUT_PRESENT
