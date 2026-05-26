@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'RadonMCUSystemDesign'
  * SOPC Builder design path: C:/Users/jwolak/Documents/FPGA/repositories/RadonMCU/RadonMCUSystemDesign/RadonMCUSystemDesign.sopcinfo
  *
- * Generated: Mon May 25 18:15:58 CEST 2026
+ * Generated: Tue May 26 14:20:29 CEST 2026
  */
 
 /*

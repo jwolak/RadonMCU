@@ -55,4 +55,13 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_location_assignment PIN_L3 -to clk_clk
 set_location_assignment PIN_B10 -to reset_reset_n
 set_instance_assignment -name IO_STANDARD "3.0-V LVTTL" -to clk_clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pio_out_export[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pio_out_export[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pio_out_export[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pio_out_export[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pio_out_export
+set_location_assignment PIN_M16 -to pio_out_export[3]
+set_location_assignment PIN_N16 -to pio_out_export[2]
+set_location_assignment PIN_P16 -to pio_out_export[1]
+set_location_assignment PIN_R16 -to pio_out_export[0]
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
