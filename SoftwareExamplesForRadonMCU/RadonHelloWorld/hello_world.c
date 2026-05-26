@@ -14,11 +14,50 @@
  *
  */
 
-#include <stdio.h>
+#include "system.h"
+#include "sys/alt_stdio.h"
+#include "sys/alt_sys_wrappers.h"
+#include "altera_avalon_pio_regs.h"
+
+#include <stdint.h>
 
 int main()
 {
-  printf("Hello from Radon MCU!\n");
+  alt_putstr("Hello from Radon MCU!\n");
+
+  uint32_t led_value = 0x1;
+  int8_t direction = 1;
+
+  while (1)
+  {
+    IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
+    alt_busy_sleep(200000);
+
+    if (direction > 0)
+    {
+      if (led_value == 0x8)
+      {
+        direction = -1;
+        led_value >>= 1;
+      }
+      else
+      {
+        led_value <<= 1;
+      }
+    }
+    else
+    {
+      if (led_value == 0x1)
+      {
+        direction = 1;
+        led_value <<= 1;
+      }
+      else
+      {
+        led_value >>= 1;
+      }
+    }
+  }
 
   return 0;
 }
