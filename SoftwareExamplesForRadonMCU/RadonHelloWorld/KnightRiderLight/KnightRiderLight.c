@@ -31,7 +31,7 @@
  */
 
 #include "KnightRiderLight.h"
-#include "equinios.h"
+#include "equinios.hpp"
 
 uint32_t get_led_value(struct KnightRiderLight *this)
 {

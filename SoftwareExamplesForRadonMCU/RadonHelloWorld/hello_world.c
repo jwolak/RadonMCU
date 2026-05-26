@@ -21,7 +21,7 @@
 #include <unistd.h>
 
 #include "KnightRiderLight/KnightRiderLight.h"
-#include "equinios.h"
+#include "equinios.hpp"
 
 #include <stdint.h>
 #include <stdbool.h>
