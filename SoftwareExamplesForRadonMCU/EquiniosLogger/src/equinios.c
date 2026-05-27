@@ -46,6 +46,12 @@ void log_set_level(log_level_t level)
   logger->set_log_level(logger, level);
 }
 
+void log_set_timestamp_provider(uint32_t (*provider)(void))
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  logger->set_timestamp_provider(logger, provider);
+}
+
 void log_write(log_level_t level, const char *fmt, ...)
 {
   struct EquiniosLogger *logger = EquiniosLogger.instance();

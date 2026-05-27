@@ -17,6 +17,7 @@
 #include "system.h"
 #include "sys/alt_stdio.h"
 #include "sys/alt_sys_wrappers.h"
+#include "sys/alt_alarm.h"
 #include "priv/alt_busy_sleep.h"
 #include "altera_avalon_pio_regs.h"
 #include <unistd.h>
@@ -29,10 +30,16 @@
 
 #define LED_DELAY 100000
 
+static uint32_t hello_world_log_timestamp(void)
+{
+  return alt_nticks();
+}
+
 int main()
 {
   alt_putstr("Hello from Radon MCU!\n");
   log_set_level(LOG_LEVEL_DEBUG);
+  log_set_timestamp_provider(hello_world_log_timestamp);
   LOGI("EquiniosLogger singleton ready");
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();

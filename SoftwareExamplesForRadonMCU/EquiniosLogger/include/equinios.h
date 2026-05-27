@@ -34,10 +34,14 @@
 #define EQUINIOS_H
 
 #include <stdarg.h>
+#include <stdint.h>
 
 #include "EquiniosTypes.h"
 
 void log_set_level(log_level_t level);
+
+/* Set timestamp provider used for log prefix, e.g. system tick counter. */
+void log_set_timestamp_provider(uint32_t (*provider)(void));
 
 void log_write(log_level_t level, const char *fmt, ...);
 

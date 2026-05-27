@@ -46,6 +46,18 @@
 
 static log_level_t g_log_level = LOG_LEVEL_INFO;
 static bool g_logger_initialized = false;
+static uint32_t (*g_timestamp_provider)(void) = NULL;
+static uint32_t g_timestamp_fallback = 0u;
+
+static uint32_t get_timestamp(void)
+{
+  if (g_timestamp_provider != NULL)
+  {
+    return g_timestamp_provider();
+  }
+
+  return g_timestamp_fallback++;
+}
 
 static void ring_buffer_push_overwrite(struct RingBuffer *ring_buffer, uint8_t data)
 {
@@ -84,10 +96,18 @@ static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level
   g_log_level = level;
 }
 
+static void set_timestamp_provider(struct EquiniosLogger *this EQUINIOS_UNUSED,
+                                   uint32_t (*provider)(void))
+{
+  g_timestamp_provider = provider;
+}
+
 static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
                        va_list args)
 {
+  char prefixed_message[EQUINIOS_LOG_MSG_MAX_LEN];
   char message[EQUINIOS_LOG_MSG_MAX_LEN];
+  uint32_t timestamp;
 
   if (level > g_log_level)
   {
@@ -95,9 +115,12 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   }
 
   logger_ensure_initialized(this);
+  timestamp = get_timestamp();
 
   (void)vsnprintf(message, sizeof(message), fmt, args);
-  ring_buffer_write_string(&this->ring_buffer_, message);
+  (void)snprintf(prefixed_message, sizeof(prefixed_message), "[%lu] %s", (unsigned long)timestamp,
+                 message);
+  ring_buffer_write_string(&this->ring_buffer_, prefixed_message);
   ring_buffer_write_string(&this->ring_buffer_, "\r\n");
 }
 
@@ -112,6 +135,7 @@ static void log_write(struct EquiniosLogger *this, log_level_t level, const char
 
 static struct EquiniosLogger g_instance = {
     .set_log_level = set_log_level,
+    .set_timestamp_provider = set_timestamp_provider,
     .log_vwrite = log_vwrite,
     .log_write = log_write,
 };

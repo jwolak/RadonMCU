@@ -34,6 +34,7 @@
 #define __EQUINIOSLOGGER_H_
 
 #include <stdarg.h>
+#include <stdint.h>
 
 #include "RingBuffer.h"
 
@@ -43,6 +44,7 @@ struct EquiniosLogger
 {
   /* public members */
   void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
+  void (*set_timestamp_provider)(struct EquiniosLogger *this, uint32_t (*provider)(void));
   void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
   void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
 
