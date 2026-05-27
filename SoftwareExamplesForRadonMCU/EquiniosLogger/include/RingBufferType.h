@@ -1,3 +1,4 @@
+
 /*-
  * BSD 3-Clause License
  *
@@ -30,34 +31,20 @@
  *
  */
 
-#ifndef __RINGBUFFER_H_
-#define __RINGBUFFER_H_
+#ifndef __RINGBUFFERTYPE_H_
+#define __RINGBUFFERTYPE_H_
 
 #include <stdint.h>
-#include <stdbool.h>
 #include <stddef.h>
 
-#include "RingBufferType.h"
+#define RING_BUFFER_SIZE 128u
 
-struct RingBuffer
+typedef struct
 {
-  /* public members */
-  void (*init)(struct RingBuffer *this);
-  bool (*is_empty)(struct RingBuffer *this);
-  bool (*is_full)(struct RingBuffer *this);
-  size_t (*size)(struct RingBuffer *this);
-  bool (*push)(struct RingBuffer *this, uint8_t data);
-  bool (*pop)(struct RingBuffer *this, uint8_t *data);
+  uint8_t buffer[RING_BUFFER_SIZE];
+  size_t head;
+  size_t tail;
+  size_t count;
+} ring_buffer_t;
 
-  /* private members */
-  ring_buffer_t buffer_;
-};
-
-extern const struct RingBufferClass
-{
-  /* Returns a pointer to a single global ring buffer instance. */
-  struct RingBuffer *(*instance)(void);
-  struct RingBuffer (*new)();
-} RingBuffer;
-
-#endif /* __RINGBUFFER_H_ */
+#endif /* __RINGBUFFERTYPE_H_ */
