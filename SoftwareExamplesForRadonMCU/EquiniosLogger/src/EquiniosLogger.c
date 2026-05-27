@@ -70,16 +70,6 @@ static void ring_buffer_write_string(struct RingBuffer *ring_buffer, const char 
   }
 }
 
-static void logger_flush_ring_buffer(struct EquiniosLogger *this)
-{
-  uint8_t byte;
-
-  while (this->ring_buffer_.pop(&this->ring_buffer_, &byte))
-  {
-    putchar((int)byte);
-  }
-}
-
 static void logger_ensure_initialized(struct EquiniosLogger *this)
 {
   if (!g_logger_initialized)
@@ -109,7 +99,6 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   (void)vsnprintf(message, sizeof(message), fmt, args);
   ring_buffer_write_string(&this->ring_buffer_, message);
   ring_buffer_write_string(&this->ring_buffer_, "\r\n");
-  logger_flush_ring_buffer(this);
 }
 
 static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)

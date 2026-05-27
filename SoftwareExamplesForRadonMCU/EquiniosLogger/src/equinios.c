@@ -34,6 +34,7 @@
 #include "EquiniosLogger.h"
 
 #include <stdarg.h>
+#include <stdio.h>
 
 void log_set_level(log_level_t level)
 {
@@ -49,4 +50,15 @@ void log_write(log_level_t level, const char *fmt, ...)
   va_start(args, fmt);
   logger->log_vwrite(logger, level, fmt, args);
   va_end(args);
+}
+
+void log_process(void)
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  uint8_t byte;
+
+  while (logger->ring_buffer_.pop(&logger->ring_buffer_, &byte))
+  {
+    putchar((int)byte);
+  }
 }

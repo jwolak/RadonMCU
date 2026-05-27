@@ -41,6 +41,9 @@ void log_set_level(log_level_t level);
 
 void log_write(log_level_t level, const char *fmt, ...);
 
+/* Call periodically from main loop or timer tick to flush queued logs. */
+void log_process(void);
+
 #define LOGC(fmt, ...) log_write(LOG_LEVEL_CRITICAL, "[CRITICAL] " fmt, ##__VA_ARGS__)
 #define LOGE(fmt, ...) log_write(LOG_LEVEL_ERROR, "[ERROR] " fmt, ##__VA_ARGS__)
 #define LOGW(fmt, ...) log_write(LOG_LEVEL_WARNING, "[WARNING] " fmt, ##__VA_ARGS__)
