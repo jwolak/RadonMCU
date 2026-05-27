@@ -115,6 +115,7 @@ static void logger_ensure_initialized(struct EquiniosLogger *this)
   }
 }
 
+/* public methods */
 static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level)
 {
   g_log_level = level;

@@ -57,7 +57,6 @@ extern const struct EquiniosLoggerClass
   /* Returns a pointer to a single global logger instance. */
   struct EquiniosLogger *(*instance)(void);
 
-  /* Compatibility factory: returns a copy of the singleton interface table. */
   struct EquiniosLogger (*new)();
 } EquiniosLogger;
 
