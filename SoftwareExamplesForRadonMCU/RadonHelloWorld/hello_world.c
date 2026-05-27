@@ -32,7 +32,14 @@
 
 static uint32_t hello_world_log_timestamp(void)
 {
-  return alt_nticks();
+  static uint32_t software_ticks = 0u;
+
+  if (alt_ticks_per_second() > 0u)
+  {
+    return alt_nticks();
+  }
+
+  return software_ticks++;
 }
 
 int main()
