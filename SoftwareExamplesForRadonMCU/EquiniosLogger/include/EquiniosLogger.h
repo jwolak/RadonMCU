@@ -51,6 +51,7 @@ struct EquiniosLogger
 
   /* private members */
   bool initialized_;
+  log_level_t log_level_;
   struct RingBuffer ring_buffer_;
 };
 

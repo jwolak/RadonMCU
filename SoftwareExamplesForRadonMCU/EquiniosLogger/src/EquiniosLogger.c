@@ -45,7 +45,6 @@
 
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
 
-static log_level_t g_log_level = LOG_LEVEL_INFO;
 static uint32_t (*g_timestamp_provider)(void) = NULL;
 static uint32_t g_timestamp_fallback = 0u;
 
@@ -115,9 +114,9 @@ static void logger_ensure_initialized(struct EquiniosLogger *this)
 }
 
 /* public methods */
-static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level)
+static void set_log_level(struct EquiniosLogger *this, log_level_t level)
 {
-  g_log_level = level;
+  this->log_level_ = level;
 }
 
 static void set_timestamp_provider(struct EquiniosLogger *this EQUINIOS_UNUSED,
@@ -133,7 +132,7 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   char message[EQUINIOS_LOG_MSG_MAX_LEN];
   uint32_t timestamp;
 
-  if (level > g_log_level)
+  if (level > this->log_level_)
   {
     return;
   }
@@ -161,6 +160,7 @@ static struct EquiniosLogger g_instance = {
     .log_vwrite = log_vwrite,
     .log_write = log_write,
     .initialized_ = false,
+    .log_level_ = LOG_LEVEL_INFO,
 };
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)
@@ -174,6 +174,7 @@ static struct EquiniosLogger newEquiniosLogger(void)
   struct EquiniosLogger logger = g_instance;
   logger.ring_buffer_ = RingBuffer.new();
   logger.initialized_ = true;
+  logger.log_level_ = LOG_LEVEL_INFO;
   return logger;
 }
 
