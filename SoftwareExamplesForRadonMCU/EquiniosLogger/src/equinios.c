@@ -36,7 +36,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define LOG_PROCESS_EVERY_N_CALLS 8u
+#define LOG_PROCESS_EVERY_N_CALLS 2u
 
 static uint32_t g_log_process_divider = 0u;
 

@@ -35,6 +35,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 #if defined(__GNUC__) || defined(__clang__)
 #define EQUINIOS_UNUSED __attribute__((unused))
@@ -59,26 +60,49 @@ static uint32_t get_timestamp(void)
   return g_timestamp_fallback++;
 }
 
-static void ring_buffer_push_overwrite(struct RingBuffer *ring_buffer, uint8_t data)
+static void ring_buffer_discard_oldest_line(struct RingBuffer *ring_buffer)
 {
-  uint8_t dropped_byte;
+  uint8_t byte;
 
-  if (ring_buffer->is_full(ring_buffer))
+  while (ring_buffer->pop(ring_buffer, &byte))
   {
-    (void)ring_buffer->pop(ring_buffer, &dropped_byte);
+    if (byte == '\n')
+    {
+      break;
+    }
   }
-
-  (void)ring_buffer->push(ring_buffer, data);
 }
 
-static void ring_buffer_write_string(struct RingBuffer *ring_buffer, const char *str)
+static void logger_enqueue_line(struct EquiniosLogger *this, const char *line)
 {
-  const unsigned char *ptr = (const unsigned char *)str;
+  size_t line_len = strlen(line);
+  size_t free_space;
+  size_t i;
 
-  while (*ptr != '\0')
+  if (line_len > (size_t)RING_BUFFER_SIZE)
   {
-    ring_buffer_push_overwrite(ring_buffer, *ptr);
-    ptr++;
+    line = line + (line_len - (size_t)RING_BUFFER_SIZE);
+    line_len = (size_t)RING_BUFFER_SIZE;
+  }
+
+  free_space = (size_t)RING_BUFFER_SIZE - this->ring_buffer_.size(&this->ring_buffer_);
+  while (free_space < line_len)
+  {
+    if (this->ring_buffer_.is_empty(&this->ring_buffer_))
+    {
+      break;
+    }
+
+    ring_buffer_discard_oldest_line(&this->ring_buffer_);
+    free_space = (size_t)RING_BUFFER_SIZE - this->ring_buffer_.size(&this->ring_buffer_);
+  }
+
+  for (i = 0; i < line_len; i++)
+  {
+    if (!this->ring_buffer_.push(&this->ring_buffer_, (uint8_t)line[i]))
+    {
+      break;
+    }
   }
 }
 
@@ -105,7 +129,7 @@ static void set_timestamp_provider(struct EquiniosLogger *this EQUINIOS_UNUSED,
 static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
                        va_list args)
 {
-  char prefixed_message[EQUINIOS_LOG_MSG_MAX_LEN];
+  char line[EQUINIOS_LOG_MSG_MAX_LEN + 4u];
   char message[EQUINIOS_LOG_MSG_MAX_LEN];
   uint32_t timestamp;
 
@@ -118,10 +142,8 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   timestamp = get_timestamp();
 
   (void)vsnprintf(message, sizeof(message), fmt, args);
-  (void)snprintf(prefixed_message, sizeof(prefixed_message), "[%lu] %s", (unsigned long)timestamp,
-                 message);
-  ring_buffer_write_string(&this->ring_buffer_, prefixed_message);
-  ring_buffer_write_string(&this->ring_buffer_, "\r\n");
+  (void)snprintf(line, sizeof(line), "[%lu] %s\r\n", (unsigned long)timestamp, message);
+  logger_enqueue_line(this, line);
 }
 
 static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)

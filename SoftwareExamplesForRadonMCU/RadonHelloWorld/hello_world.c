@@ -30,23 +30,16 @@
 
 #define LED_DELAY 100000
 
-static uint32_t hello_world_log_timestamp(void)
-{
-  static uint32_t software_ticks = 0u;
-
-  if (alt_ticks_per_second() > 0u)
-  {
-    return alt_nticks();
-  }
-
-  return software_ticks++;
-}
-
 int main()
 {
   alt_putstr("Hello from Radon MCU!\n");
   log_set_level(LOG_LEVEL_DEBUG);
-  log_set_timestamp_provider(hello_world_log_timestamp);
+
+  if (alt_ticks_per_second() > 0u)
+  {
+    log_set_timestamp_provider(alt_nticks);
+  }
+
   LOGI("EquiniosLogger singleton ready");
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();
