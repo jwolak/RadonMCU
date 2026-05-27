@@ -30,33 +30,78 @@
  *
  */
 
-#ifndef __EQUINIOSLOGGER_H_
-#define __EQUINIOSLOGGER_H_
-
-#include <stdarg.h>
-
 #include "RingBuffer.h"
 
-#include "EquiniosTypes.h"
-
-struct EquiniosLogger
+static void init(struct RingBuffer *this)
 {
-  /* public members */
-  void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
-  void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
-  void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
+  this->head = 0;
+  this->tail = 0;
+  this->count = 0;
+}
 
-  /* private members */
-  struct RingBuffer ring_buffer_;
+static bool is_empty(struct RingBuffer *this)
+{
+  return this->count == 0;
+}
+
+static bool is_full(struct RingBuffer *this)
+{
+  return this->count == RING_BUFFER_SIZE;
+}
+
+static size_t size(struct RingBuffer *this)
+{
+  return this->count;
+}
+
+static bool push(struct RingBuffer *this, uint8_t data)
+{
+  if (this->is_full(this))
+  {
+    return false;
+  }
+
+  this->buffer_[this->head] = data;
+  this->head = (this->head + 1) % RING_BUFFER_SIZE;
+  this->count++;
+  return true;
+}
+
+static bool pop(struct RingBuffer *this, uint8_t *data)
+{
+  if (this->is_empty(this))
+  {
+    return false;
+  }
+
+  *data = this->buffer_[this->tail];
+  this->tail = (this->tail + 1) % RING_BUFFER_SIZE;
+  this->count--;
+  return true;
+}
+
+static struct RingBuffer g_instance = {
+    .init = init,
+    .is_empty = is_empty,
+    .is_full = is_full,
+    .size = size,
+    .push = push,
+    .pop = pop,
 };
 
-extern const struct EquiniosLoggerClass
+static struct RingBuffer *instanceRingBuffer(void)
 {
-  /* Returns a pointer to a single global logger instance. */
-  struct EquiniosLogger *(*instance)(void);
+  return &g_instance;
+}
 
-  /* Compatibility factory: returns a copy of the singleton interface table. */
-  struct EquiniosLogger (*new)();
-} EquiniosLogger;
+static struct RingBuffer newRingBuffer(void)
+{
+  struct RingBuffer rb = g_instance;
+  rb.init(&rb);
+  return rb;
+}
 
-#endif /* __EQUINIOSLOGGER_H_ */
+const struct RingBufferClass RingBuffer = {
+    .instance = instanceRingBuffer,
+    .new = newRingBuffer,
+};

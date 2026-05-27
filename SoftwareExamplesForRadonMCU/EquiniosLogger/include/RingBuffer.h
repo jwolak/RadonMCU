@@ -30,33 +30,42 @@
  *
  */
 
-#ifndef __EQUINIOSLOGGER_H_
-#define __EQUINIOSLOGGER_H_
+#ifndef __RINGBUFFER_H_
+#define __RINGBUFFER_H_
 
-#include <stdarg.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
 
-#include "RingBuffer.h"
+#define RING_BUFFER_SIZE 128u
 
-#include "EquiniosTypes.h"
+typedef struct
+{
+  uint8_t buffer[RING_BUFFER_SIZE];
+  size_t head;
+  size_t tail;
+  size_t count;
+} ring_buffer_t;
 
-struct EquiniosLogger
+struct RingBuffer
 {
   /* public members */
-  void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
-  void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
-  void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
+  void (*init)(struct RingBuffer *this);
+  bool (*is_empty)(struct RingBuffer *this);
+  bool (*is_full)(struct RingBuffer *this);
+  size_t (*size)(struct RingBuffer *this);
+  bool (*push)(struct RingBuffer *this, uint8_t data);
+  bool (*pop)(struct RingBuffer *this, uint8_t *data);
 
   /* private members */
-  struct RingBuffer ring_buffer_;
+  ring_buffer_t buffer_;
 };
 
-extern const struct EquiniosLoggerClass
+extern const struct RingBufferClass
 {
-  /* Returns a pointer to a single global logger instance. */
-  struct EquiniosLogger *(*instance)(void);
+  /* Returns a pointer to a single global ring buffer instance. */
+  struct RingBuffer *(*instance)(void);
+  struct RingBuffer (*new)();
+} RingBuffer;
 
-  /* Compatibility factory: returns a copy of the singleton interface table. */
-  struct EquiniosLogger (*new)();
-} EquiniosLogger;
-
-#endif /* __EQUINIOSLOGGER_H_ */
+#endif /* __RINGBUFFER_H_ */
