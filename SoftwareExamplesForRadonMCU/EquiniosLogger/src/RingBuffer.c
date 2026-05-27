@@ -34,24 +34,24 @@
 
 static void init(struct RingBuffer *this)
 {
-  this->head = 0;
-  this->tail = 0;
-  this->count = 0;
+  this->buffer_.head = 0;
+  this->buffer_.tail = 0;
+  this->buffer_.count = 0;
 }
 
 static bool is_empty(struct RingBuffer *this)
 {
-  return this->count == 0;
+  return this->buffer_.count == 0;
 }
 
 static bool is_full(struct RingBuffer *this)
 {
-  return this->count == RING_BUFFER_SIZE;
+  return this->buffer_.count == RING_BUFFER_SIZE;
 }
 
 static size_t size(struct RingBuffer *this)
 {
-  return this->count;
+  return this->buffer_.count;
 }
 
 static bool push(struct RingBuffer *this, uint8_t data)
@@ -61,9 +61,9 @@ static bool push(struct RingBuffer *this, uint8_t data)
     return false;
   }
 
-  this->buffer_[this->head] = data;
-  this->head = (this->head + 1) % RING_BUFFER_SIZE;
-  this->count++;
+  this->buffer_.buffer[this->buffer_.head] = data;
+  this->buffer_.head = (this->buffer_.head + 1u) % RING_BUFFER_SIZE;
+  this->buffer_.count++;
   return true;
 }
 
@@ -74,9 +74,9 @@ static bool pop(struct RingBuffer *this, uint8_t *data)
     return false;
   }
 
-  *data = this->buffer_[this->tail];
-  this->tail = (this->tail + 1) % RING_BUFFER_SIZE;
-  this->count--;
+  *data = this->buffer_.buffer[this->buffer_.tail];
+  this->buffer_.tail = (this->buffer_.tail + 1u) % RING_BUFFER_SIZE;
+  this->buffer_.count--;
   return true;
 }
 
