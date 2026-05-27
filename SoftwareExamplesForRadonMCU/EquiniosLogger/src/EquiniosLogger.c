@@ -46,7 +46,6 @@
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
 
 static log_level_t g_log_level = LOG_LEVEL_INFO;
-static bool g_logger_initialized = false;
 static uint32_t (*g_timestamp_provider)(void) = NULL;
 static uint32_t g_timestamp_fallback = 0u;
 
@@ -108,10 +107,10 @@ static void logger_enqueue_line(struct EquiniosLogger *this, const char *line)
 
 static void logger_ensure_initialized(struct EquiniosLogger *this)
 {
-  if (!g_logger_initialized)
+  if (!this->initialized_)
   {
     this->ring_buffer_ = RingBuffer.new();
-    g_logger_initialized = true;
+    this->initialized_ = true;
   }
 }
 
@@ -161,6 +160,7 @@ static struct EquiniosLogger g_instance = {
     .set_timestamp_provider = set_timestamp_provider,
     .log_vwrite = log_vwrite,
     .log_write = log_write,
+    .initialized_ = false,
 };
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)
@@ -171,7 +171,10 @@ static struct EquiniosLogger *instanceEquiniosLogger(void)
 
 static struct EquiniosLogger newEquiniosLogger(void)
 {
-  return *instanceEquiniosLogger();
+  struct EquiniosLogger logger = g_instance;
+  logger.ring_buffer_ = RingBuffer.new();
+  logger.initialized_ = true;
+  return logger;
 }
 
 const struct EquiniosLoggerClass EquiniosLogger = {

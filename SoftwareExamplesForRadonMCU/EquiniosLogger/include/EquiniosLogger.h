@@ -34,6 +34,7 @@
 #define __EQUINIOSLOGGER_H_
 
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "RingBuffer.h"
@@ -49,6 +50,7 @@ struct EquiniosLogger
   void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
 
   /* private members */
+  bool initialized_;
   struct RingBuffer ring_buffer_;
 };
 
