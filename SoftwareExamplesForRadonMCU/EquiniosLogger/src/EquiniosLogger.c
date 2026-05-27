@@ -42,23 +42,74 @@
 #define EQUINIOS_UNUSED
 #endif
 
+#define EQUINIOS_LOG_MSG_MAX_LEN 256u
+
 static log_level_t g_log_level = LOG_LEVEL_INFO;
+static bool g_logger_initialized = false;
+
+static void ring_buffer_push_overwrite(struct RingBuffer *ring_buffer, uint8_t data)
+{
+  uint8_t dropped_byte;
+
+  if (ring_buffer->is_full(ring_buffer))
+  {
+    (void)ring_buffer->pop(ring_buffer, &dropped_byte);
+  }
+
+  (void)ring_buffer->push(ring_buffer, data);
+}
+
+static void ring_buffer_write_string(struct RingBuffer *ring_buffer, const char *str)
+{
+  const unsigned char *ptr = (const unsigned char *)str;
+
+  while (*ptr != '\0')
+  {
+    ring_buffer_push_overwrite(ring_buffer, *ptr);
+    ptr++;
+  }
+}
+
+static void logger_flush_ring_buffer(struct EquiniosLogger *this)
+{
+  uint8_t byte;
+
+  while (this->ring_buffer_.pop(&this->ring_buffer_, &byte))
+  {
+    putchar((int)byte);
+  }
+}
+
+static void logger_ensure_initialized(struct EquiniosLogger *this)
+{
+  if (!g_logger_initialized)
+  {
+    this->ring_buffer_ = RingBuffer.new();
+    g_logger_initialized = true;
+  }
+}
 
 static void set_log_level(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level)
 {
   g_log_level = level;
 }
 
-static void log_vwrite(struct EquiniosLogger *this EQUINIOS_UNUSED, log_level_t level,
-                       const char *fmt, va_list args)
+static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
+                       va_list args)
 {
+  char message[EQUINIOS_LOG_MSG_MAX_LEN];
+
   if (level > g_log_level)
   {
     return;
   }
 
-  vprintf(fmt, args);
-  printf("\r\n");
+  logger_ensure_initialized(this);
+
+  (void)vsnprintf(message, sizeof(message), fmt, args);
+  ring_buffer_write_string(&this->ring_buffer_, message);
+  ring_buffer_write_string(&this->ring_buffer_, "\r\n");
+  logger_flush_ring_buffer(this);
 }
 
 static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
@@ -78,6 +129,7 @@ static struct EquiniosLogger g_instance = {
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)
 {
+  logger_ensure_initialized(&g_instance);
   return &g_instance;
 }
 
