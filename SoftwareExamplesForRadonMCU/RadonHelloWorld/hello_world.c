@@ -17,6 +17,7 @@
 #include "system.h"
 #include "sys/alt_stdio.h"
 #include "sys/alt_sys_wrappers.h"
+#include "sys/alt_alarm.h"
 #include "priv/alt_busy_sleep.h"
 #include "altera_avalon_pio_regs.h"
 #include <unistd.h>
@@ -33,12 +34,20 @@ int main()
 {
   alt_putstr("Hello from Radon MCU!\n");
   log_set_level(LOG_LEVEL_DEBUG);
+
+  if (alt_ticks_per_second() > 0u)
+  {
+    log_set_timestamp_provider(alt_nticks);
+  }
+
   LOGI("EquiniosLogger singleton ready");
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();
 
   while (true)
   {
+    log_process();
+
     uint32_t led_value = knight_rider_light.get_led_value(&knight_rider_light);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
     alt_busy_sleep(LED_DELAY);

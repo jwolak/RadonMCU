@@ -1,3 +1,4 @@
+
 /*-
  * BSD 3-Clause License
  *
@@ -30,29 +31,20 @@
  *
  */
 
-#ifndef EQUINIOS_H
-#define EQUINIOS_H
+#ifndef __RINGBUFFERTYPE_H_
+#define __RINGBUFFERTYPE_H_
 
-#include <stdarg.h>
 #include <stdint.h>
+#include <stddef.h>
 
-#include "EquiniosTypes.h"
+#define RING_BUFFER_SIZE 128u
 
-void log_set_level(log_level_t level);
+typedef struct
+{
+  uint8_t buffer[RING_BUFFER_SIZE];
+  size_t head;
+  size_t tail;
+  size_t count;
+} ring_buffer_t;
 
-/* Set timestamp provider used for log prefix, e.g. system tick counter. */
-void log_set_timestamp_provider(uint32_t (*provider)(void));
-
-void log_write(log_level_t level, const char *fmt, ...);
-
-/* Call periodically from main loop or timer tick to flush queued logs. */
-void log_process(void);
-
-#define LOGC(fmt, ...) log_write(LOG_LEVEL_CRITICAL, "[CRITICAL] " fmt, ##__VA_ARGS__)
-#define LOGE(fmt, ...) log_write(LOG_LEVEL_ERROR, "[ERROR] " fmt, ##__VA_ARGS__)
-#define LOGW(fmt, ...) log_write(LOG_LEVEL_WARNING, "[WARNING] " fmt, ##__VA_ARGS__)
-#define LOGI(fmt, ...) log_write(LOG_LEVEL_INFO, "[INFO] " fmt, ##__VA_ARGS__)
-#define LOGD(fmt, ...) log_write(LOG_LEVEL_DEBUG, "[DEBUG] " fmt, ##__VA_ARGS__)
-#define LOGT(fmt, ...) log_write(LOG_LEVEL_TRACE, "[TRACE] " fmt, ##__VA_ARGS__)
-
-#endif
+#endif /* __RINGBUFFERTYPE_H_ */

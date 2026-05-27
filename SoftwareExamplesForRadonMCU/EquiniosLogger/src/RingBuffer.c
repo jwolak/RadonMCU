@@ -30,29 +30,78 @@
  *
  */
 
-#ifndef EQUINIOS_H
-#define EQUINIOS_H
+#include "RingBuffer.h"
 
-#include <stdarg.h>
-#include <stdint.h>
+static void init(struct RingBuffer *this)
+{
+  this->buffer_.head = 0;
+  this->buffer_.tail = 0;
+  this->buffer_.count = 0;
+}
 
-#include "EquiniosTypes.h"
+static bool is_empty(struct RingBuffer *this)
+{
+  return this->buffer_.count == 0;
+}
 
-void log_set_level(log_level_t level);
+static bool is_full(struct RingBuffer *this)
+{
+  return this->buffer_.count == RING_BUFFER_SIZE;
+}
 
-/* Set timestamp provider used for log prefix, e.g. system tick counter. */
-void log_set_timestamp_provider(uint32_t (*provider)(void));
+static size_t size(struct RingBuffer *this)
+{
+  return this->buffer_.count;
+}
 
-void log_write(log_level_t level, const char *fmt, ...);
+static bool push(struct RingBuffer *this, uint8_t data)
+{
+  if (this->is_full(this))
+  {
+    return false;
+  }
 
-/* Call periodically from main loop or timer tick to flush queued logs. */
-void log_process(void);
+  this->buffer_.buffer[this->buffer_.head] = data;
+  this->buffer_.head = (this->buffer_.head + 1u) % RING_BUFFER_SIZE;
+  this->buffer_.count++;
+  return true;
+}
 
-#define LOGC(fmt, ...) log_write(LOG_LEVEL_CRITICAL, "[CRITICAL] " fmt, ##__VA_ARGS__)
-#define LOGE(fmt, ...) log_write(LOG_LEVEL_ERROR, "[ERROR] " fmt, ##__VA_ARGS__)
-#define LOGW(fmt, ...) log_write(LOG_LEVEL_WARNING, "[WARNING] " fmt, ##__VA_ARGS__)
-#define LOGI(fmt, ...) log_write(LOG_LEVEL_INFO, "[INFO] " fmt, ##__VA_ARGS__)
-#define LOGD(fmt, ...) log_write(LOG_LEVEL_DEBUG, "[DEBUG] " fmt, ##__VA_ARGS__)
-#define LOGT(fmt, ...) log_write(LOG_LEVEL_TRACE, "[TRACE] " fmt, ##__VA_ARGS__)
+static bool pop(struct RingBuffer *this, uint8_t *data)
+{
+  if (this->is_empty(this))
+  {
+    return false;
+  }
 
-#endif
+  *data = this->buffer_.buffer[this->buffer_.tail];
+  this->buffer_.tail = (this->buffer_.tail + 1u) % RING_BUFFER_SIZE;
+  this->buffer_.count--;
+  return true;
+}
+
+static struct RingBuffer g_instance = {
+    .init = init,
+    .is_empty = is_empty,
+    .is_full = is_full,
+    .size = size,
+    .push = push,
+    .pop = pop,
+};
+
+static struct RingBuffer *instanceRingBuffer(void)
+{
+  return &g_instance;
+}
+
+static struct RingBuffer newRingBuffer(void)
+{
+  struct RingBuffer rb = g_instance;
+  rb.init(&rb);
+  return rb;
+}
+
+const struct RingBufferClass RingBuffer = {
+    .instance = instanceRingBuffer,
+    .new = newRingBuffer,
+};

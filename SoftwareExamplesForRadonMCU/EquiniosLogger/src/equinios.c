@@ -34,11 +34,22 @@
 #include "EquiniosLogger.h"
 
 #include <stdarg.h>
+#include <stdio.h>
+
+#define LOG_PROCESS_EVERY_N_CALLS 2u
+
+static uint32_t g_log_process_divider = 0u;
 
 void log_set_level(log_level_t level)
 {
   struct EquiniosLogger *logger = EquiniosLogger.instance();
   logger->set_log_level(logger, level);
+}
+
+void log_set_timestamp_provider(uint32_t (*provider)(void))
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  logger->set_timestamp_provider(logger, provider);
 }
 
 void log_write(log_level_t level, const char *fmt, ...)
@@ -49,4 +60,23 @@ void log_write(log_level_t level, const char *fmt, ...)
   va_start(args, fmt);
   logger->log_vwrite(logger, level, fmt, args);
   va_end(args);
+}
+
+void log_process(void)
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  uint8_t byte;
+
+  g_log_process_divider++;
+  if (g_log_process_divider < LOG_PROCESS_EVERY_N_CALLS)
+  {
+    return;
+  }
+
+  g_log_process_divider = 0u;
+
+  while (logger->ring_buffer_.pop(&logger->ring_buffer_, &byte))
+  {
+    putchar((int)byte);
+  }
 }

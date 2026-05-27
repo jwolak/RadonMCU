@@ -34,6 +34,10 @@
 #define __EQUINIOSLOGGER_H_
 
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "RingBuffer.h"
 
 #include "EquiniosTypes.h"
 
@@ -41,8 +45,14 @@ struct EquiniosLogger
 {
   /* public members */
   void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
+  void (*set_timestamp_provider)(struct EquiniosLogger *this, uint32_t (*provider)(void));
   void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
   void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
+
+  /* private members */
+  bool initialized_;
+  log_level_t log_level_;
+  struct RingBuffer ring_buffer_;
 };
 
 extern const struct EquiniosLoggerClass
@@ -50,7 +60,6 @@ extern const struct EquiniosLoggerClass
   /* Returns a pointer to a single global logger instance. */
   struct EquiniosLogger *(*instance)(void);
 
-  /* Compatibility factory: returns a copy of the singleton interface table. */
   struct EquiniosLogger (*new)();
 } EquiniosLogger;
 
