@@ -31,7 +31,6 @@
  */
 
 #include "equinios.h"
-#include "EquiniosLock.h"
 #include "EquiniosLogger.h"
 
 #include <stdarg.h>
@@ -68,32 +67,5 @@ void log_write(log_level_t level, const char *fmt, ...)
 void log_process(void)
 {
   struct EquiniosLogger *logger = EquiniosLogger.instance();
-  uint8_t byte;
-  equinios_lock_state_t lock_state;
-  bool has_byte;
-
-  lock_state = EquiniosLock.enter();
-  logger->increment_log_process_divider(logger);
-  if (logger->log_process_divider_ < logger->log_process_every_n_calls_)
-  {
-    EquiniosLock.exit(lock_state);
-    return;
-  }
-
-  logger->reset_log_process_divider(logger);
-  EquiniosLock.exit(lock_state);
-
-  while (1)
-  {
-    lock_state = EquiniosLock.enter();
-    has_byte = logger->ring_buffer_.pop(&logger->ring_buffer_, &byte);
-    EquiniosLock.exit(lock_state);
-
-    if (!has_byte)
-    {
-      break;
-    }
-
-    putchar((int)byte);
-  }
+  logger->process(logger);
 }

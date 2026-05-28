@@ -165,18 +165,21 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   EquiniosLock.exit(lock_state);
 }
 
-static void increment_log_process_divider(struct EquiniosLogger *this)
+static bool should_process(struct EquiniosLogger *this)
 {
   equinios_lock_state_t lock_state = EquiniosLock.enter();
-  this->log_process_divider_++;
-  EquiniosLock.exit(lock_state);
-}
+  bool should_flush;
 
-static void reset_log_process_divider(struct EquiniosLogger *this)
-{
-  equinios_lock_state_t lock_state = EquiniosLock.enter();
-  this->log_process_divider_ = 0u;
+  this->log_process_divider_++;
+  should_flush = this->log_process_divider_ >= this->log_process_every_n_calls_;
+  if (should_flush)
+  {
+    this->log_process_divider_ = 0u;
+  }
+
   EquiniosLock.exit(lock_state);
+
+  return should_flush;
 }
 
 static bool pop_from_buffer(struct EquiniosLogger *this, uint8_t *data)
@@ -188,18 +191,31 @@ static bool pop_from_buffer(struct EquiniosLogger *this, uint8_t *data)
   return result;
 }
 
+static void process(struct EquiniosLogger *this)
+{
+  uint8_t byte;
+
+  if (!should_process(this))
+  {
+    return;
+  }
+
+  while (pop_from_buffer(this, &byte))
+  {
+    putchar((int)byte);
+  }
+}
+
 static struct EquiniosLogger g_instance = {
     .set_log_level = set_log_level,
     .set_process_every_n_calls = set_process_every_n_calls,
     .set_timestamp_provider = set_timestamp_provider,
     .log_vwrite = log_vwrite,
+    .process = process,
     .initialized_ = false,
     .log_level_ = LOG_LEVEL_INFO,
     .log_process_divider_ = 0u,
     .log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT,
-    .increment_log_process_divider = increment_log_process_divider,
-    .reset_log_process_divider = reset_log_process_divider,
-    .pop_from_buffer = pop_from_buffer,
 };
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)
