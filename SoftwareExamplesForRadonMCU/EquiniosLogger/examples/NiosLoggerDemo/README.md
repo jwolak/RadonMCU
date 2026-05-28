@@ -1,36 +1,36 @@
 # NiosLoggerDemo
 
-Minimalna aplikacja pokazujaca, jak uzywac biblioteki EquiniosLogger na Nios II.
+A minimal application showing how to use the EquiniosLogger library on Nios II.
 
-## Co pokazuje demo
+## What This Demo Shows
 
-- konfiguracje poziomu logowania,
-- ustawienie provider-a timestamp,
-- ustawienie interwalu `log_process`,
-- cykliczne logowanie przez `LOGD/LOGW/LOGE` i oproznianie bufora.
+- log level configuration,
+- timestamp provider setup,
+- `log_process` interval configuration,
+- periodic logging with `LOGD/LOGW/LOGE` and buffer flushing.
 
-## Wymagania
+## Requirements
 
-- Nios II EDS w PATH (`nios2-app-generate-makefile`, `nios2-elf-gcc`, `make`),
-- ustawione `SOPC_KIT_NIOS2`,
-- wygenerowany BSP (domyslnie `SoftwareExamplesForRadonMCU/RadonHelloWorld_bsp`),
-- zbudowany projekt FPGA (`.sof`) dla docelowego systemu.
+- Nios II EDS in PATH (`nios2-app-generate-makefile`, `nios2-elf-gcc`, `make`),
+- `SOPC_KIT_NIOS2` environment variable set,
+- generated BSP (default: `SoftwareExamplesForRadonMCU/RadonHelloWorld_bsp`),
+- built FPGA hardware image (`.sof`) for the target system.
 
-## Szybki start
+## Quick Start
 
-Z katalogu tego przykładu:
+From this example directory:
 
 ```bash
 ./create-this-app
 ```
 
-Skrypt:
+The script:
 
-1. buduje `../../libEquiniosLogger.a`,
-2. generuje Makefile aplikacji,
-3. buduje plik ELF.
+1. builds `../../libEquiniosLogger.a`,
+2. generates the application Makefile,
+3. builds the ELF file.
 
-## Uruchomienie na plytce
+## Running On Hardware
 
 ```bash
 nios2-configure-sof <path-to-sof>
@@ -38,12 +38,12 @@ nios2-terminal
 make download-elf
 ```
 
-Po uruchomieniu w terminalu JTAG zobaczysz okresowe komunikaty loggera.
+After starting, you should see periodic logger output in the JTAG terminal.
 
-## Przydatne zmienne
+## Useful Variables
 
-Mozesz nadpisac domyslne sciezki przed uruchomieniem skryptu:
+You can override default paths before running the script:
 
-- `BSP_DIR` - katalog BSP,
-- `QUARTUS_PROJECT_DIR` - katalog projektu Quartus,
-- `ELF_NAME` - nazwa pliku wynikowego ELF.
+- `BSP_DIR` - BSP directory,
+- `QUARTUS_PROJECT_DIR` - Quartus project directory,
+- `ELF_NAME` - output ELF file name.
