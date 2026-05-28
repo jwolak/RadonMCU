@@ -47,6 +47,12 @@ void log_set_process_every_n_calls(uint32_t calls);
 /* Set timestamp provider used for log prefix, e.g. system tick counter. */
 void log_set_timestamp_provider(uint32_t (*provider)(void));
 
+/* Get count of log lines dropped due to ring buffer overflow. */
+uint32_t log_get_dropped_lines(void);
+
+/* Reset count of log lines dropped due to ring buffer overflow. */
+void log_reset_dropped_lines(void);
+
 /* Write a log message with the specified log level. */
 void log_write(log_level_t level, const char *fmt, ...);
 

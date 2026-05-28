@@ -12,6 +12,7 @@ static uint32_t demo_timestamp_provider(void)
 int main(void)
 {
   uint32_t loop = 0u;
+  uint32_t dropped;
 
   log_set_level(LOG_LEVEL_TRACE);
   log_set_process_every_n_calls(1u);
@@ -37,6 +38,16 @@ int main(void)
     if ((loop % 20000u) == 0u)
     {
       LOGE("Error sample loop=%lu", (unsigned long)loop);
+    }
+
+    if ((loop % 10000u) == 0u)
+    {
+      dropped = log_get_dropped_lines();
+      if (dropped > 0u)
+      {
+        LOGW("Dropped log lines since last check: %lu", (unsigned long)dropped);
+        log_reset_dropped_lines();
+      }
     }
 
     log_process();

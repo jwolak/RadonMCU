@@ -47,18 +47,24 @@
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
 #define EQUINIOS_LOG_LINE_EXTRA_CHARS 4u
 #define EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT 2u
+#define EQUINIOS_LOG_PROCESS_CHUNK_SIZE 32u
 
-static void ring_buffer_discard_oldest_line(struct EquiniosLogger *this)
+static bool ring_buffer_discard_oldest_line(struct EquiniosLogger *this)
 {
   uint8_t byte;
+  bool discarded = false;
 
   while (this->ring_buffer_.pop(&this->ring_buffer_, &byte))
   {
+    discarded = true;
+
     if (byte == '\n')
     {
       break;
     }
   }
+
+  return discarded;
 }
 
 static void logger_enqueue_line(struct EquiniosLogger *this, const char *line)
@@ -81,7 +87,10 @@ static void logger_enqueue_line(struct EquiniosLogger *this, const char *line)
       break;
     }
 
-    ring_buffer_discard_oldest_line(this);
+    if (ring_buffer_discard_oldest_line(this))
+    {
+      this->dropped_lines_++;
+    }
     free_space = (size_t)RING_BUFFER_SIZE - this->ring_buffer_.size(&this->ring_buffer_);
   }
 
@@ -141,6 +150,27 @@ static void set_timestamp_provider(struct EquiniosLogger *this, uint32_t (*provi
   EquiniosLock.exit(lock_state);
 }
 
+static uint32_t get_dropped_lines(struct EquiniosLogger *this)
+{
+  equinios_lock_state_t lock_state;
+  uint32_t dropped_lines;
+
+  lock_state = EquiniosLock.enter();
+  dropped_lines = this->dropped_lines_;
+  EquiniosLock.exit(lock_state);
+
+  return dropped_lines;
+}
+
+static void reset_dropped_lines(struct EquiniosLogger *this)
+{
+  equinios_lock_state_t lock_state;
+
+  lock_state = EquiniosLock.enter();
+  this->dropped_lines_ = 0u;
+  EquiniosLock.exit(lock_state);
+}
+
 static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
                        va_list args)
 {
@@ -149,18 +179,25 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   uint32_t timestamp;
   equinios_lock_state_t lock_state;
 
+  logger_ensure_initialized(this);
+
+  lock_state = EquiniosLock.enter();
   if (level > this->log_level_)
   {
+    EquiniosLock.exit(lock_state);
     return;
   }
-
-  logger_ensure_initialized(this);
+  EquiniosLock.exit(lock_state);
 
   (void)vsnprintf(message, sizeof(message), fmt, args);
 
   lock_state = EquiniosLock.enter();
   timestamp = this->timestamp_provider_.get_timestamp(&this->timestamp_provider_);
+  EquiniosLock.exit(lock_state);
+
   (void)snprintf(line, sizeof(line), "[%lu] %s\r\n", (unsigned long)timestamp, message);
+
+  lock_state = EquiniosLock.enter();
   logger_enqueue_line(this, line);
   EquiniosLock.exit(lock_state);
 }
@@ -182,40 +219,56 @@ static bool should_process(struct EquiniosLogger *this)
   return should_flush;
 }
 
-static bool pop_from_buffer(struct EquiniosLogger *this, uint8_t *data)
+static size_t pop_chunk_from_buffer(struct EquiniosLogger *this, uint8_t *data, size_t max_len)
 {
   equinios_lock_state_t lock_state = EquiniosLock.enter();
-  bool result = this->ring_buffer_.pop(&this->ring_buffer_, data);
+  size_t count = 0u;
+
+  while ((count < max_len) && this->ring_buffer_.pop(&this->ring_buffer_, &data[count]))
+  {
+    count++;
+  }
+
   EquiniosLock.exit(lock_state);
 
-  return result;
+  return count;
 }
 
 static void process(struct EquiniosLogger *this)
 {
-  uint8_t byte;
+  uint8_t chunk[EQUINIOS_LOG_PROCESS_CHUNK_SIZE];
+  size_t count;
+  size_t i;
 
   if (!should_process(this))
   {
     return;
   }
 
-  while (pop_from_buffer(this, &byte))
+  do
   {
-    putchar((int)byte);
-  }
+    count = pop_chunk_from_buffer(this, chunk, sizeof(chunk));
+
+    for (i = 0u; i < count; i++)
+    {
+      putchar((int)chunk[i]);
+    }
+  } while (count > 0u);
 }
 
 static struct EquiniosLogger g_instance = {
     .set_log_level = set_log_level,
     .set_process_every_n_calls = set_process_every_n_calls,
     .set_timestamp_provider = set_timestamp_provider,
+    .get_dropped_lines = get_dropped_lines,
+    .reset_dropped_lines = reset_dropped_lines,
     .log_vwrite = log_vwrite,
     .process = process,
     .initialized_ = false,
     .log_level_ = LOG_LEVEL_INFO,
     .log_process_divider_ = 0u,
     .log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT,
+    .dropped_lines_ = 0u,
 };
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)
@@ -233,6 +286,7 @@ static struct EquiniosLogger newEquiniosLogger(void)
   logger.log_level_ = LOG_LEVEL_INFO;
   logger.log_process_divider_ = 0u;
   logger.log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT;
+  logger.dropped_lines_ = 0u;
   return logger;
 }
 

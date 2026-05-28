@@ -54,6 +54,18 @@ void log_set_timestamp_provider(uint32_t (*provider)(void))
   logger->set_timestamp_provider(logger, provider);
 }
 
+uint32_t log_get_dropped_lines(void)
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  return logger->get_dropped_lines(logger);
+}
+
+void log_reset_dropped_lines(void)
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  logger->reset_dropped_lines(logger);
+}
+
 void log_write(log_level_t level, const char *fmt, ...)
 {
   struct EquiniosLogger *logger = EquiniosLogger.instance();
