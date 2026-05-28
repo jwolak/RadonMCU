@@ -45,19 +45,6 @@
 
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
 
-static uint32_t (*g_timestamp_provider)(void) = NULL;
-static uint32_t g_timestamp_fallback = 0u;
-
-static uint32_t get_timestamp(void)
-{
-  if (g_timestamp_provider != NULL)
-  {
-    return g_timestamp_provider();
-  }
-
-  return g_timestamp_fallback++;
-}
-
 static void ring_buffer_discard_oldest_line(struct RingBuffer *ring_buffer)
 {
   uint8_t byte;
@@ -119,10 +106,9 @@ static void set_log_level(struct EquiniosLogger *this, log_level_t level)
   this->log_level_ = level;
 }
 
-static void set_timestamp_provider(struct EquiniosLogger *this EQUINIOS_UNUSED,
-                                   uint32_t (*provider)(void))
+static void set_timestamp_provider(struct EquiniosLogger *this, uint32_t (*provider)(void))
 {
-  g_timestamp_provider = provider;
+  this->timestamp_provider_.set_provider(&this->timestamp_provider_, provider);
 }
 
 static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
@@ -138,7 +124,7 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   }
 
   logger_ensure_initialized(this);
-  timestamp = get_timestamp();
+  timestamp = this->timestamp_provider_.get_timestamp(&this->timestamp_provider_);
 
   (void)vsnprintf(message, sizeof(message), fmt, args);
   (void)snprintf(line, sizeof(line), "[%lu] %s\r\n", (unsigned long)timestamp, message);

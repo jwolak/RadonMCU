@@ -38,6 +38,7 @@
 #include <stdint.h>
 
 #include "RingBuffer.h"
+#include "TimestampProvider.h"
 
 #include "EquiniosTypes.h"
 
@@ -53,6 +54,7 @@ struct EquiniosLogger
   bool initialized_;
   log_level_t log_level_;
   struct RingBuffer ring_buffer_;
+  struct TimestampProvider timestamp_provider_;
 };
 
 extern const struct EquiniosLoggerClass
