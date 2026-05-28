@@ -38,6 +38,38 @@
 
 #define LOG_PROCESS_EVERY_N_CALLS 2u
 
+#if defined(__NIOS2__)
+typedef uint32_t equinios_lock_state_t;
+
+static equinios_lock_state_t equinios_lock_enter(void)
+{
+  equinios_lock_state_t status;
+  __asm__ volatile("rdctl %0, status\n\t"
+                   "wrctl status, zero"
+                   : "=r"(status)
+                   :
+                   : "memory");
+  return status;
+}
+
+static void equinios_lock_exit(equinios_lock_state_t state)
+{
+  __asm__ volatile("wrctl status, %0" : : "r"(state) : "memory");
+}
+#else
+typedef uint32_t equinios_lock_state_t;
+
+static equinios_lock_state_t equinios_lock_enter(void)
+{
+  return 0u;
+}
+
+static void equinios_lock_exit(equinios_lock_state_t state)
+{
+  (void)state;
+}
+#endif
+
 static uint32_t g_log_process_divider = 0u;
 
 void log_set_level(log_level_t level)
@@ -66,17 +98,31 @@ void log_process(void)
 {
   struct EquiniosLogger *logger = EquiniosLogger.instance();
   uint8_t byte;
+  equinios_lock_state_t lock_state;
+  bool has_byte;
 
+  lock_state = equinios_lock_enter();
   g_log_process_divider++;
   if (g_log_process_divider < LOG_PROCESS_EVERY_N_CALLS)
   {
+    equinios_lock_exit(lock_state);
     return;
   }
 
   g_log_process_divider = 0u;
+  equinios_lock_exit(lock_state);
 
-  while (logger->ring_buffer_.pop(&logger->ring_buffer_, &byte))
+  while (1)
   {
+    lock_state = equinios_lock_enter();
+    has_byte = logger->ring_buffer_.pop(&logger->ring_buffer_, &byte);
+    equinios_lock_exit(lock_state);
+
+    if (!has_byte)
+    {
+      break;
+    }
+
     putchar((int)byte);
   }
 }
