@@ -55,8 +55,7 @@ struct RingBuffer
 
 extern const struct RingBufferClass
 {
-  /* Returns a pointer to a single global ring buffer instance. */
-  struct RingBuffer *(*instance)(void);
+  /* Returns a new ring buffer value initialized to empty state. */
   struct RingBuffer (*new)();
 } RingBuffer;
 

@@ -80,28 +80,20 @@ static bool pop(struct RingBuffer *this, uint8_t *data)
   return true;
 }
 
-static struct RingBuffer g_instance = {
-    .init = init,
-    .is_empty = is_empty,
-    .is_full = is_full,
-    .size = size,
-    .push = push,
-    .pop = pop,
-};
-
-static struct RingBuffer *instanceRingBuffer(void)
-{
-  return &g_instance;
-}
-
 static struct RingBuffer newRingBuffer(void)
 {
-  struct RingBuffer rb = g_instance;
+  struct RingBuffer rb = {
+      .init = init,
+      .is_empty = is_empty,
+      .is_full = is_full,
+      .size = size,
+      .push = push,
+      .pop = pop,
+  };
   rb.init(&rb);
   return rb;
 }
 
 const struct RingBufferClass RingBuffer = {
-    .instance = instanceRingBuffer,
     .new = newRingBuffer,
 };

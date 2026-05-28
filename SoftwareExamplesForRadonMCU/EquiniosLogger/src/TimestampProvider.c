@@ -32,7 +32,9 @@
 
 #include "TimestampProvider.h"
 
-static uint32_t get_timestamp(TimestampProvider *this)
+#include <stddef.h>
+
+static uint32_t get_timestamp(struct TimestampProvider *this)
 {
   if (this->timestamp_provider_ != NULL)
   {
@@ -42,7 +44,7 @@ static uint32_t get_timestamp(TimestampProvider *this)
   return this->ticks_count_++;
 }
 
-static bool set_provider(TimestampProvider *this, uint32_t (*provider)(void))
+static bool set_provider(struct TimestampProvider *this, uint32_t (*provider)(void))
 {
   if (provider == NULL)
   {
@@ -53,9 +55,18 @@ static bool set_provider(TimestampProvider *this, uint32_t (*provider)(void))
   return true;
 }
 
+static struct TimestampProvider newTimestampProvider(void)
+{
+  struct TimestampProvider provider = {
+      .set_provider = set_provider,
+      .get_timestamp = get_timestamp,
+      .timestamp_provider_ = NULL,
+      .ticks_count_ = 0u,
+  };
+
+  return provider;
+}
+
 const struct TimestampProviderClass TimestampProvider = {
-    .set_provider = set_provider,
-    .get_timestamp = get_timestamp,
-    .timestamp_provider_ = NULL,
-    .ticks_count_ = 0u,
+    .new = newTimestampProvider,
 };

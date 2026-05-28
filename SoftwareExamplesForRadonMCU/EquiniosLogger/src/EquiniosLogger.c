@@ -96,6 +96,7 @@ static void logger_ensure_initialized(struct EquiniosLogger *this)
   if (!this->initialized_)
   {
     this->ring_buffer_ = RingBuffer.new();
+    this->timestamp_provider_ = TimestampProvider.new();
     this->initialized_ = true;
   }
 }
@@ -159,6 +160,7 @@ static struct EquiniosLogger newEquiniosLogger(void)
 {
   struct EquiniosLogger logger = g_instance;
   logger.ring_buffer_ = RingBuffer.new();
+  logger.timestamp_provider_ = TimestampProvider.new();
   logger.initialized_ = true;
   logger.log_level_ = LOG_LEVEL_INFO;
   return logger;
