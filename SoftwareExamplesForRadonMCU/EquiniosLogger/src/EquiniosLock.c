@@ -32,7 +32,7 @@
 
 #include "EquiniosLock.h"
 
-static equinios_lock_state_t enterEquiniosLock(void)
+static equinios_lock_state_t enter_equinios_lock(void)
 {
 #if defined(__NIOS2__)
   equinios_lock_state_t status;
@@ -47,7 +47,7 @@ static equinios_lock_state_t enterEquiniosLock(void)
 #endif
 }
 
-static void exitEquiniosLock(equinios_lock_state_t state)
+static void exit_equinios_lock(equinios_lock_state_t state)
 {
 #if defined(__NIOS2__)
   __asm__ volatile("wrctl status, %0" : : "r"(state) : "memory");
@@ -57,6 +57,6 @@ static void exitEquiniosLock(equinios_lock_state_t state)
 }
 
 const struct EquiniosLockClass EquiniosLock = {
-    .enter = enterEquiniosLock,
-    .exit = exitEquiniosLock,
+    .enter = enter_equinios_lock,
+    .exit = exit_equinios_lock,
 };

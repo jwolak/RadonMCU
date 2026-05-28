@@ -39,6 +39,7 @@ typedef uint32_t equinios_lock_state_t;
 
 extern const struct EquiniosLockClass
 {
+  /* public methods */
   equinios_lock_state_t (*enter)(void);
   void (*exit)(equinios_lock_state_t state);
 } EquiniosLock;
