@@ -165,15 +165,6 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
   EquiniosLock.exit(lock_state);
 }
 
-static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
-{
-  va_list args;
-
-  va_start(args, fmt);
-  this->log_vwrite(this, level, fmt, args);
-  va_end(args);
-}
-
 static void increment_log_process_divider(struct EquiniosLogger *this)
 {
   equinios_lock_state_t lock_state = EquiniosLock.enter();
@@ -193,7 +184,6 @@ static struct EquiniosLogger g_instance = {
     .set_process_every_n_calls = set_process_every_n_calls,
     .set_timestamp_provider = set_timestamp_provider,
     .log_vwrite = log_vwrite,
-    .log_write = log_write,
     .initialized_ = false,
     .log_level_ = LOG_LEVEL_INFO,
     .log_process_divider_ = 0u,
@@ -217,8 +207,6 @@ static struct EquiniosLogger newEquiniosLogger(void)
   logger.log_level_ = LOG_LEVEL_INFO;
   logger.log_process_divider_ = 0u;
   logger.log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT;
-  logger.increment_log_process_divider = increment_log_process_divider;
-  logger.reset_log_process_divider = reset_log_process_divider;
   return logger;
 }
 
