@@ -38,6 +38,7 @@
 
 #include "EquiniosTypes.h"
 
+/* Configure global log level. Messages with lower log level will be discarded. */
 void log_set_level(log_level_t level);
 
 /* Configure how often log_process flushes (every N calls). */
