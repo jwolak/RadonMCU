@@ -40,6 +40,9 @@
 
 void log_set_level(log_level_t level);
 
+/* Configure how often log_process flushes (every N calls). */
+void log_set_process_every_n_calls(uint32_t calls);
+
 /* Set timestamp provider used for log prefix, e.g. system tick counter. */
 void log_set_timestamp_provider(uint32_t (*provider)(void));
 

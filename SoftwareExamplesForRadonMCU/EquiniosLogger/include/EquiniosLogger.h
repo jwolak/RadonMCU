@@ -46,6 +46,7 @@ struct EquiniosLogger
 {
   /* public members */
   void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
+  void (*set_process_every_n_calls)(struct EquiniosLogger *this, uint32_t calls);
   void (*set_timestamp_provider)(struct EquiniosLogger *this, uint32_t (*provider)(void));
   void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
   void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
@@ -53,6 +54,8 @@ struct EquiniosLogger
   /* private members */
   bool initialized_;
   log_level_t log_level_;
+  uint32_t log_process_divider_;
+  uint32_t log_process_every_n_calls_;
   struct RingBuffer ring_buffer_;
   struct TimestampProvider timestamp_provider_;
 };

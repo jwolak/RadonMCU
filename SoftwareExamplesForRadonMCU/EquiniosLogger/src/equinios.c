@@ -37,14 +37,16 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define LOG_PROCESS_EVERY_N_CALLS 2u
-
-static uint32_t g_log_process_divider = 0u;
-
 void log_set_level(log_level_t level)
 {
   struct EquiniosLogger *logger = EquiniosLogger.instance();
   logger->set_log_level(logger, level);
+}
+
+void log_set_process_every_n_calls(uint32_t calls)
+{
+  struct EquiniosLogger *logger = EquiniosLogger.instance();
+  logger->set_process_every_n_calls(logger, calls);
 }
 
 void log_set_timestamp_provider(uint32_t (*provider)(void))
@@ -71,14 +73,14 @@ void log_process(void)
   bool has_byte;
 
   lock_state = EquiniosLock.enter();
-  g_log_process_divider++;
-  if (g_log_process_divider < LOG_PROCESS_EVERY_N_CALLS)
+  logger->log_process_divider_++;
+  if (logger->log_process_divider_ < logger->log_process_every_n_calls_)
   {
     EquiniosLock.exit(lock_state);
     return;
   }
 
-  g_log_process_divider = 0u;
+  logger->log_process_divider_ = 0u;
   EquiniosLock.exit(lock_state);
 
   while (1)

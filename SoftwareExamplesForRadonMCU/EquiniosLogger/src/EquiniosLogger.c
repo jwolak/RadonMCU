@@ -46,6 +46,7 @@
 
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
 #define EQUINIOS_LOG_LINE_EXTRA_CHARS 4u
+#define EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT 2u
 
 static void ring_buffer_discard_oldest_line(struct EquiniosLogger *this)
 {
@@ -115,6 +116,21 @@ static void set_log_level(struct EquiniosLogger *this, log_level_t level)
   EquiniosLock.exit(lock_state);
 }
 
+static void set_process_every_n_calls(struct EquiniosLogger *this, uint32_t calls)
+{
+  equinios_lock_state_t lock_state;
+
+  if (calls == 0u)
+  {
+    calls = 1u;
+  }
+
+  lock_state = EquiniosLock.enter();
+  this->log_process_every_n_calls_ = calls;
+  this->log_process_divider_ = 0u;
+  EquiniosLock.exit(lock_state);
+}
+
 static void set_timestamp_provider(struct EquiniosLogger *this, uint32_t (*provider)(void))
 {
   equinios_lock_state_t lock_state;
@@ -160,11 +176,14 @@ static void log_write(struct EquiniosLogger *this, log_level_t level, const char
 
 static struct EquiniosLogger g_instance = {
     .set_log_level = set_log_level,
+    .set_process_every_n_calls = set_process_every_n_calls,
     .set_timestamp_provider = set_timestamp_provider,
     .log_vwrite = log_vwrite,
     .log_write = log_write,
     .initialized_ = false,
     .log_level_ = LOG_LEVEL_INFO,
+    .log_process_divider_ = 0u,
+    .log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT,
 };
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)
@@ -180,6 +199,8 @@ static struct EquiniosLogger newEquiniosLogger(void)
   logger.timestamp_provider_ = TimestampProvider.new();
   logger.initialized_ = true;
   logger.log_level_ = LOG_LEVEL_INFO;
+  logger.log_process_divider_ = 0u;
+  logger.log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT;
   return logger;
 }
 
