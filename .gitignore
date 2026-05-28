@@ -52,6 +52,11 @@ Makefile
 install_manifest.txt
 compile_commands.json
 
+# Keep handcrafted makefile for EquiniosLogger tracked
+!SoftwareExamplesForRadonMCU/EquiniosLogger/Makefile
+SoftwareExamplesForRadonMCU/EquiniosLogger/build/
+SoftwareExamplesForRadonMCU/EquiniosLogger/libEquiniosLogger.a
+
 # Temporary files
 *.tmp
 *.log
