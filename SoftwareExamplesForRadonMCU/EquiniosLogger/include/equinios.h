@@ -46,11 +46,13 @@ void log_set_process_every_n_calls(uint32_t calls);
 /* Set timestamp provider used for log prefix, e.g. system tick counter. */
 void log_set_timestamp_provider(uint32_t (*provider)(void));
 
+/* Write a log message with the specified log level. */
 void log_write(log_level_t level, const char *fmt, ...);
 
 /* Call periodically from main loop or timer tick to flush queued logs. */
 void log_process(void);
 
+/* Convenience macros for different log levels. */
 #define LOGC(fmt, ...) log_write(LOG_LEVEL_CRITICAL, "[CRITICAL] " fmt, ##__VA_ARGS__)
 #define LOGE(fmt, ...) log_write(LOG_LEVEL_ERROR, "[ERROR] " fmt, ##__VA_ARGS__)
 #define LOGW(fmt, ...) log_write(LOG_LEVEL_WARNING, "[WARNING] " fmt, ##__VA_ARGS__)
