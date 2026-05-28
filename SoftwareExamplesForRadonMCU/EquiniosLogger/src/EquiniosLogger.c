@@ -45,6 +45,7 @@
 #endif
 
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
+#define EQUINIOS_LOG_LINE_EXTRA_CHARS 4u
 
 static void ring_buffer_discard_oldest_line(struct EquiniosLogger *this)
 {
@@ -127,7 +128,7 @@ static void set_timestamp_provider(struct EquiniosLogger *this, uint32_t (*provi
 static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
                        va_list args)
 {
-  char line[EQUINIOS_LOG_MSG_MAX_LEN + 4u];
+  char line[EQUINIOS_LOG_MSG_MAX_LEN + EQUINIOS_LOG_LINE_EXTRA_CHARS];
   char message[EQUINIOS_LOG_MSG_MAX_LEN];
   uint32_t timestamp;
   equinios_lock_state_t lock_state;
