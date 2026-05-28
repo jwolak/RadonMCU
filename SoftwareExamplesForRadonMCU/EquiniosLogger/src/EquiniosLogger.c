@@ -179,6 +179,15 @@ static void reset_log_process_divider(struct EquiniosLogger *this)
   EquiniosLock.exit(lock_state);
 }
 
+static bool pop_from_buffer(struct EquiniosLogger *this, uint8_t *data)
+{
+  equinios_lock_state_t lock_state = EquiniosLock.enter();
+  bool result = this->ring_buffer_.pop(&this->ring_buffer_, data);
+  EquiniosLock.exit(lock_state);
+
+  return result;
+}
+
 static struct EquiniosLogger g_instance = {
     .set_log_level = set_log_level,
     .set_process_every_n_calls = set_process_every_n_calls,
@@ -190,6 +199,7 @@ static struct EquiniosLogger g_instance = {
     .log_process_every_n_calls_ = EQUINIOS_LOG_PROCESS_EVERY_N_CALLS_DEFAULT,
     .increment_log_process_divider = increment_log_process_divider,
     .reset_log_process_divider = reset_log_process_divider,
+    .pop_from_buffer = pop_from_buffer,
 };
 
 static struct EquiniosLogger *instanceEquiniosLogger(void)

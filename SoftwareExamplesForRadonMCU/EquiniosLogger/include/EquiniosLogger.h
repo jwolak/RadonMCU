@@ -51,6 +51,7 @@ struct EquiniosLogger
   void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
   void (*increment_log_process_divider)(struct EquiniosLogger *this);
   void (*reset_log_process_divider)(struct EquiniosLogger *this);
+  bool (*pop_from_buffer)(struct EquiniosLogger *this, uint8_t *data);
 
   /* private members */
   bool initialized_;
