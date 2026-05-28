@@ -30,68 +30,33 @@
  *
  */
 
-#include "equinios.h"
 #include "EquiniosLock.h"
-#include "EquiniosLogger.h"
 
-#include <stdarg.h>
-#include <stdio.h>
-
-#define LOG_PROCESS_EVERY_N_CALLS 2u
-
-static uint32_t g_log_process_divider = 0u;
-
-void log_set_level(log_level_t level)
+static equinios_lock_state_t enterEquiniosLock(void)
 {
-  struct EquiniosLogger *logger = EquiniosLogger.instance();
-  logger->set_log_level(logger, level);
+#if defined(__NIOS2__)
+  equinios_lock_state_t status;
+  __asm__ volatile("rdctl %0, status\n\t"
+                   "wrctl status, zero"
+                   : "=r"(status)
+                   :
+                   : "memory");
+  return status;
+#else
+  return 0u;
+#endif
 }
 
-void log_set_timestamp_provider(uint32_t (*provider)(void))
+static void exitEquiniosLock(equinios_lock_state_t state)
 {
-  struct EquiniosLogger *logger = EquiniosLogger.instance();
-  logger->set_timestamp_provider(logger, provider);
+#if defined(__NIOS2__)
+  __asm__ volatile("wrctl status, %0" : : "r"(state) : "memory");
+#else
+  (void)state;
+#endif
 }
 
-void log_write(log_level_t level, const char *fmt, ...)
-{
-  struct EquiniosLogger *logger = EquiniosLogger.instance();
-  va_list args;
-
-  va_start(args, fmt);
-  logger->log_vwrite(logger, level, fmt, args);
-  va_end(args);
-}
-
-void log_process(void)
-{
-  struct EquiniosLogger *logger = EquiniosLogger.instance();
-  uint8_t byte;
-  equinios_lock_state_t lock_state;
-  bool has_byte;
-
-  lock_state = EquiniosLock.enter();
-  g_log_process_divider++;
-  if (g_log_process_divider < LOG_PROCESS_EVERY_N_CALLS)
-  {
-    EquiniosLock.exit(lock_state);
-    return;
-  }
-
-  g_log_process_divider = 0u;
-  EquiniosLock.exit(lock_state);
-
-  while (1)
-  {
-    lock_state = EquiniosLock.enter();
-    has_byte = logger->ring_buffer_.pop(&logger->ring_buffer_, &byte);
-    EquiniosLock.exit(lock_state);
-
-    if (!has_byte)
-    {
-      break;
-    }
-
-    putchar((int)byte);
-  }
-}
+const struct EquiniosLockClass EquiniosLock = {
+    .enter = enterEquiniosLock,
+    .exit = exitEquiniosLock,
+};

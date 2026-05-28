@@ -31,6 +31,7 @@
  */
 
 #include "EquiniosTypes.h"
+#include "EquiniosLock.h"
 #include "EquiniosLogger.h"
 
 #include <stdio.h>
@@ -44,41 +45,6 @@
 #endif
 
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
-
-#if defined(__NIOS2__)
-typedef uint32_t equinios_lock_state_t;
-
-static equinios_lock_state_t equinios_lock_enter(void)
-{
-  equinios_lock_state_t status;
-  __asm__ volatile("rdctl %0, status\n\t"
-                   "wrctl status, zero"
-                   : "=r"(status)
-                   :
-                   : "memory");
-  return status;
-}
-
-static void equinios_lock_exit(equinios_lock_state_t state)
-{
-  __asm__ volatile("wrctl status, %0"
-                   :
-                   : "r"(state)
-                   : "memory");
-}
-#else
-typedef uint32_t equinios_lock_state_t;
-
-static equinios_lock_state_t equinios_lock_enter(void)
-{
-  return 0u;
-}
-
-static void equinios_lock_exit(equinios_lock_state_t state)
-{
-  (void)state;
-}
-#endif
 
 static void ring_buffer_discard_oldest_line(struct EquiniosLogger *this)
 {
@@ -128,7 +94,7 @@ static void logger_enqueue_line(struct EquiniosLogger *this, const char *line)
 
 static void logger_ensure_initialized(struct EquiniosLogger *this)
 {
-  equinios_lock_state_t lock_state = equinios_lock_enter();
+  equinios_lock_state_t lock_state = EquiniosLock.enter();
 
   if (!this->initialized_)
   {
@@ -137,15 +103,15 @@ static void logger_ensure_initialized(struct EquiniosLogger *this)
     this->initialized_ = true;
   }
 
-  equinios_lock_exit(lock_state);
+  EquiniosLock.exit(lock_state);
 }
 
 /* public methods */
 static void set_log_level(struct EquiniosLogger *this, log_level_t level)
 {
-  equinios_lock_state_t lock_state = equinios_lock_enter();
+  equinios_lock_state_t lock_state = EquiniosLock.enter();
   this->log_level_ = level;
-  equinios_lock_exit(lock_state);
+  EquiniosLock.exit(lock_state);
 }
 
 static void set_timestamp_provider(struct EquiniosLogger *this, uint32_t (*provider)(void))
@@ -153,9 +119,9 @@ static void set_timestamp_provider(struct EquiniosLogger *this, uint32_t (*provi
   equinios_lock_state_t lock_state;
 
   logger_ensure_initialized(this);
-  lock_state = equinios_lock_enter();
+  lock_state = EquiniosLock.enter();
   this->timestamp_provider_.set_provider(&this->timestamp_provider_, provider);
-  equinios_lock_exit(lock_state);
+  EquiniosLock.exit(lock_state);
 }
 
 static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const char *fmt,
@@ -175,11 +141,11 @@ static void log_vwrite(struct EquiniosLogger *this, log_level_t level, const cha
 
   (void)vsnprintf(message, sizeof(message), fmt, args);
 
-  lock_state = equinios_lock_enter();
+  lock_state = EquiniosLock.enter();
   timestamp = this->timestamp_provider_.get_timestamp(&this->timestamp_provider_);
   (void)snprintf(line, sizeof(line), "[%lu] %s\r\n", (unsigned long)timestamp, message);
   logger_enqueue_line(this, line);
-  equinios_lock_exit(lock_state);
+  EquiniosLock.exit(lock_state);
 }
 
 static void log_write(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...)
