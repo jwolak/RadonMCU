@@ -45,11 +45,11 @@
 
 #define EQUINIOS_LOG_MSG_MAX_LEN 256u
 
-static void ring_buffer_discard_oldest_line(struct RingBuffer *ring_buffer)
+static void ring_buffer_discard_oldest_line(struct EquiniosLogger *this)
 {
   uint8_t byte;
 
-  while (ring_buffer->pop(ring_buffer, &byte))
+  while (this->ring_buffer_.pop(&this->ring_buffer_, &byte))
   {
     if (byte == '\n')
     {
@@ -78,7 +78,7 @@ static void logger_enqueue_line(struct EquiniosLogger *this, const char *line)
       break;
     }
 
-    ring_buffer_discard_oldest_line(&this->ring_buffer_);
+    ring_buffer_discard_oldest_line(this);
     free_space = (size_t)RING_BUFFER_SIZE - this->ring_buffer_.size(&this->ring_buffer_);
   }
 
