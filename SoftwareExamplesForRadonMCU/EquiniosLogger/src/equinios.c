@@ -73,14 +73,14 @@ void log_process(void)
   bool has_byte;
 
   lock_state = EquiniosLock.enter();
-  logger->log_process_divider_++;
+  logger->increment_log_process_divider(logger);
   if (logger->log_process_divider_ < logger->log_process_every_n_calls_)
   {
     EquiniosLock.exit(lock_state);
     return;
   }
 
-  logger->log_process_divider_ = 0u;
+  logger->reset_log_process_divider(logger);
   EquiniosLock.exit(lock_state);
 
   while (1)
