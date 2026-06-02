@@ -52,6 +52,11 @@ Makefile
 install_manifest.txt
 compile_commands.json
 
+# Keep handcrafted makefile for EquiniosLogger tracked
+!SoftwareExamplesForRadonMCU/EquiniosLogger/Makefile
+SoftwareExamplesForRadonMCU/EquiniosLogger/build/
+SoftwareExamplesForRadonMCU/EquiniosLogger/libEquiniosLogger.a
+
 # Temporary files
 *.tmp
 *.log
@@ -95,3 +100,5 @@ SoftwareExamplesForRadonMCU/RadonHelloWorld/*.objdump
 # Nios II BSP rebuild marker
 SoftwareExamplesForRadonMCU/RadonHelloWorld_bsp/.force_rebuild_all
 SoftwareExamplesForRadonMCU/RadonHelloWorld_bsp/.force_relink
+
+.vscode/

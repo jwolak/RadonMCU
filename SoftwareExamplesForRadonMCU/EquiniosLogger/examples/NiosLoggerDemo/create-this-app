@@ -1,0 +1,75 @@
+#!/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LOGGER_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SOFTWARE_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+
+BSP_DIR_DEFAULT="$SOFTWARE_DIR/RadonHelloWorld_bsp"
+QUARTUS_PROJECT_DIR_DEFAULT="$REPO_ROOT/RadonMCUSystemDesign"
+
+BSP_DIR="${BSP_DIR:-$BSP_DIR_DEFAULT}"
+QUARTUS_PROJECT_DIR="${QUARTUS_PROJECT_DIR:-$QUARTUS_PROJECT_DIR_DEFAULT}"
+ELF_NAME="${ELF_NAME:-NiosLoggerDemo.elf}"
+
+if [ -z "${SOPC_KIT_NIOS2}" ]; then
+  echo "Required \$SOPC_KIT_NIOS2 environment variable is not set"
+  exit 1
+fi
+
+if [ ! -f "$BSP_DIR/public.mk" ]; then
+  echo "BSP not found at: $BSP_DIR"
+  echo "Set BSP_DIR env var or generate BSP first."
+  exit 1
+fi
+
+to_mixed_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$1"
+  else
+    echo "$1"
+  fi
+}
+
+BSP_DIR_M="$(to_mixed_path "$BSP_DIR")"
+QUARTUS_PROJECT_DIR_M="$(to_mixed_path "$QUARTUS_PROJECT_DIR")"
+
+echo "Building EquiniosLogger static library"
+make -C "$LOGGER_DIR"
+
+if [ ! -f "$LOGGER_DIR/libEquiniosLogger.a" ]; then
+  echo "Library not found: $LOGGER_DIR/libEquiniosLogger.a"
+  exit 1
+fi
+
+if [ ! -f "$SCRIPT_DIR/Makefile" ]; then
+  cmd=(
+    nios2-app-generate-makefile
+    --bsp-dir "$BSP_DIR_M"
+    --elf-name "$ELF_NAME"
+    --src-files main.c
+    --set "QUARTUS_PROJECT_DIR=$QUARTUS_PROJECT_DIR_M"
+    --set "APP_INCLUDE_DIRS=../../include"
+    --set "APP_LIBRARY_DIRS=../.."
+    --set "APP_LIBRARY_NAMES=EquiniosLogger"
+    --set "LDDEPS=../../libEquiniosLogger.a"
+    --set "MAKEABLE_LIBRARY_ROOT_DIRS=../.."
+  )
+
+  echo "Running: ${cmd[*]}"
+  "${cmd[@]}"
+else
+  echo "Makefile already exists, reusing it"
+fi
+
+if [ "$1" != "--no-make" ]; then
+  make
+  echo
+  echo "Build complete: $ELF_NAME"
+  echo "To run on hardware:"
+  echo "  1. nios2-configure-sof <path-to-sof>"
+  echo "  2. nios2-terminal"
+  echo "  3. make download-elf"
+fi

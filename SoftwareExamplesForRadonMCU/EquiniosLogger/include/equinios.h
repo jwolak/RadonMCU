@@ -38,16 +38,28 @@
 
 #include "EquiniosTypes.h"
 
+/* Configure global log level. Messages with lower log level will be discarded. */
 void log_set_level(log_level_t level);
+
+/* Configure how often log_process flushes (every N calls). */
+void log_set_process_every_n_calls(uint32_t calls);
 
 /* Set timestamp provider used for log prefix, e.g. system tick counter. */
 void log_set_timestamp_provider(uint32_t (*provider)(void));
 
+/* Get count of log lines dropped due to ring buffer overflow. */
+uint32_t log_get_dropped_lines(void);
+
+/* Reset count of log lines dropped due to ring buffer overflow. */
+void log_reset_dropped_lines(void);
+
+/* Write a log message with the specified log level. */
 void log_write(log_level_t level, const char *fmt, ...);
 
 /* Call periodically from main loop or timer tick to flush queued logs. */
 void log_process(void);
 
+/* Convenience macros for different log levels. */
 #define LOGC(fmt, ...) log_write(LOG_LEVEL_CRITICAL, "[CRITICAL] " fmt, ##__VA_ARGS__)
 #define LOGE(fmt, ...) log_write(LOG_LEVEL_ERROR, "[ERROR] " fmt, ##__VA_ARGS__)
 #define LOGW(fmt, ...) log_write(LOG_LEVEL_WARNING, "[WARNING] " fmt, ##__VA_ARGS__)

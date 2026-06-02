@@ -30,33 +30,27 @@
  *
  */
 
-#ifndef __RINGBUFFER_H_
-#define __RINGBUFFER_H_
+#ifndef __TIMESTAMPPROVIDER_H_
+#define __TIMESTAMPPROVIDER_H_
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <stddef.h>
 
-#include "RingBufferType.h"
-
-struct RingBuffer
+struct TimestampProvider
 {
-  /* public members */
-  void (*init)(struct RingBuffer *this);
-  bool (*is_empty)(struct RingBuffer *this);
-  bool (*is_full)(struct RingBuffer *this);
-  size_t (*size)(struct RingBuffer *this);
-  bool (*push)(struct RingBuffer *this, uint8_t data);
-  bool (*pop)(struct RingBuffer *this, uint8_t *data);
+
+  /* public methods */
+  bool (*set_provider)(struct TimestampProvider *this, uint32_t (*provider)(void));
+  uint32_t (*get_timestamp)(struct TimestampProvider *this);
 
   /* private members */
-  ring_buffer_t buffer_;
+  uint32_t (*timestamp_provider_)(void);
+  uint32_t ticks_count_;
 };
 
-extern const struct RingBufferClass
+extern const struct TimestampProviderClass
 {
-  /* Returns a new ring buffer value initialized to empty state. */
-  struct RingBuffer (*new)();
-} RingBuffer;
+  struct TimestampProvider (*new)();
+} TimestampProvider;
 
-#endif /* __RINGBUFFER_H_ */
+#endif /* __TIMESTAMPPROVIDER_H_ */

@@ -38,6 +38,7 @@
 #include <stdint.h>
 
 #include "RingBuffer.h"
+#include "TimestampProvider.h"
 
 #include "EquiniosTypes.h"
 
@@ -45,14 +46,21 @@ struct EquiniosLogger
 {
   /* public members */
   void (*set_log_level)(struct EquiniosLogger *this, log_level_t level);
+  void (*set_process_every_n_calls)(struct EquiniosLogger *this, uint32_t calls);
   void (*set_timestamp_provider)(struct EquiniosLogger *this, uint32_t (*provider)(void));
+  uint32_t (*get_dropped_lines)(struct EquiniosLogger *this);
+  void (*reset_dropped_lines)(struct EquiniosLogger *this);
   void (*log_vwrite)(struct EquiniosLogger *this, log_level_t level, const char *fmt, va_list args);
-  void (*log_write)(struct EquiniosLogger *this, log_level_t level, const char *fmt, ...);
+  void (*process)(struct EquiniosLogger *this);
 
   /* private members */
   bool initialized_;
   log_level_t log_level_;
+  uint32_t log_process_divider_;
+  uint32_t log_process_every_n_calls_;
+  uint32_t dropped_lines_;
   struct RingBuffer ring_buffer_;
+  struct TimestampProvider timestamp_provider_;
 };
 
 extern const struct EquiniosLoggerClass

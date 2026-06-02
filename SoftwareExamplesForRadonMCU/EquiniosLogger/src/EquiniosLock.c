@@ -30,33 +30,33 @@
  *
  */
 
-#ifndef __RINGBUFFER_H_
-#define __RINGBUFFER_H_
+#include "EquiniosLock.h"
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <stddef.h>
-
-#include "RingBufferType.h"
-
-struct RingBuffer
+static equinios_lock_state_t enter_equinios_lock(void)
 {
-  /* public members */
-  void (*init)(struct RingBuffer *this);
-  bool (*is_empty)(struct RingBuffer *this);
-  bool (*is_full)(struct RingBuffer *this);
-  size_t (*size)(struct RingBuffer *this);
-  bool (*push)(struct RingBuffer *this, uint8_t data);
-  bool (*pop)(struct RingBuffer *this, uint8_t *data);
+#if defined(__NIOS2__)
+  equinios_lock_state_t status;
+  __asm__ volatile("rdctl %0, status\n\t"
+                   "wrctl status, zero"
+                   : "=r"(status)
+                   :
+                   : "memory");
+  return status;
+#else
+  return 0u;
+#endif
+}
 
-  /* private members */
-  ring_buffer_t buffer_;
+static void exit_equinios_lock(equinios_lock_state_t state)
+{
+#if defined(__NIOS2__)
+  __asm__ volatile("wrctl status, %0" : : "r"(state) : "memory");
+#else
+  (void)state;
+#endif
+}
+
+const struct EquiniosLockClass EquiniosLock = {
+    .enter = enter_equinios_lock,
+    .exit = exit_equinios_lock,
 };
-
-extern const struct RingBufferClass
-{
-  /* Returns a new ring buffer value initialized to empty state. */
-  struct RingBuffer (*new)();
-} RingBuffer;
-
-#endif /* __RINGBUFFER_H_ */

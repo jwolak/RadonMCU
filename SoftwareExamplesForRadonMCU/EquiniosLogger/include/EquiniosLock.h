@@ -30,33 +30,18 @@
  *
  */
 
-#ifndef __RINGBUFFER_H_
-#define __RINGBUFFER_H_
+#ifndef __EQUINIOSLOCK_H_
+#define __EQUINIOSLOCK_H_
 
 #include <stdint.h>
-#include <stdbool.h>
-#include <stddef.h>
 
-#include "RingBufferType.h"
+typedef uint32_t equinios_lock_state_t;
 
-struct RingBuffer
+extern const struct EquiniosLockClass
 {
-  /* public members */
-  void (*init)(struct RingBuffer *this);
-  bool (*is_empty)(struct RingBuffer *this);
-  bool (*is_full)(struct RingBuffer *this);
-  size_t (*size)(struct RingBuffer *this);
-  bool (*push)(struct RingBuffer *this, uint8_t data);
-  bool (*pop)(struct RingBuffer *this, uint8_t *data);
+  /* public methods */
+  equinios_lock_state_t (*enter)(void);
+  void (*exit)(equinios_lock_state_t state);
+} EquiniosLock;
 
-  /* private members */
-  ring_buffer_t buffer_;
-};
-
-extern const struct RingBufferClass
-{
-  /* Returns a new ring buffer value initialized to empty state. */
-  struct RingBuffer (*new)();
-} RingBuffer;
-
-#endif /* __RINGBUFFER_H_ */
+#endif /* __EQUINIOSLOCK_H_ */
