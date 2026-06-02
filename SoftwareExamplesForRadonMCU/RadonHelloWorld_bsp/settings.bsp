@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>2026-05-26 14:20:28</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1779798028883</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>2026-06-02 19:31:36</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1780421496317</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>C:\Users\jwolak\Documents\FPGA\repositories\RadonMCU\SoftwareExamplesForRadonMCU\RadonHelloWorld_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>C:\Users\jwolak\Documents\FPGA\repositories\RadonMCU\RadonMCUSystemDesign\RadonMCUSystemDesign.sopcinfo</SopcDesignFile>
@@ -917,14 +917,20 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>INPUT</slaveDescriptor>
+                <addressRange>0x00011030 - 0x0001103F</addressRange>
+                <addressSpan>16</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>CPU_ID</slaveDescriptor>
-                <addressRange>0x00011030 - 0x00011037</addressRange>
+                <addressRange>0x00011040 - 0x00011047</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>JTAG_UART</slaveDescriptor>
-                <addressRange>0x00011038 - 0x0001103F</addressRange>
+                <addressRange>0x00011048 - 0x0001104F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

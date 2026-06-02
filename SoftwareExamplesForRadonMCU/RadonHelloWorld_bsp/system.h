@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'RadonMCUSystemDesign'
  * SOPC Builder design path: C:/Users/jwolak/Documents/FPGA/repositories/RadonMCU/RadonMCUSystemDesign/RadonMCUSystemDesign.sopcinfo
  *
- * Generated: Tue May 26 14:20:29 CEST 2026
+ * Generated: Tue Jun 02 19:31:37 CEST 2026
  */
 
 /*
@@ -148,13 +148,13 @@
  */
 
 #define ALT_MODULE_CLASS_CPU_ID altera_avalon_sysid_qsys
-#define CPU_ID_BASE 0x11030
+#define CPU_ID_BASE 0x11040
 #define CPU_ID_ID 1879048192
 #define CPU_ID_IRQ -1
 #define CPU_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define CPU_ID_NAME "/dev/CPU_ID"
 #define CPU_ID_SPAN 8
-#define CPU_ID_TIMESTAMP 1779796128
+#define CPU_ID_TIMESTAMP 1780420892
 #define CPU_ID_TYPE "altera_avalon_sysid_qsys"
 
 
@@ -172,12 +172,39 @@
 
 
 /*
+ * INPUT configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_INPUT altera_avalon_pio
+#define INPUT_BASE 0x11030
+#define INPUT_BIT_CLEARING_EDGE_REGISTER 0
+#define INPUT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define INPUT_CAPTURE 0
+#define INPUT_DATA_WIDTH 3
+#define INPUT_DO_TEST_BENCH_WIRING 0
+#define INPUT_DRIVEN_SIM_VALUE 0
+#define INPUT_EDGE_TYPE "NONE"
+#define INPUT_FREQ 50000000
+#define INPUT_HAS_IN 1
+#define INPUT_HAS_OUT 0
+#define INPUT_HAS_TRI 0
+#define INPUT_IRQ -1
+#define INPUT_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define INPUT_IRQ_TYPE "NONE"
+#define INPUT_NAME "/dev/INPUT"
+#define INPUT_RESET_VALUE 0
+#define INPUT_SPAN 16
+#define INPUT_TYPE "altera_avalon_pio"
+
+
+/*
  * JTAG_UART configuration
  *
  */
 
 #define ALT_MODULE_CLASS_JTAG_UART altera_avalon_jtag_uart
-#define JTAG_UART_BASE 0x11038
+#define JTAG_UART_BASE 0x11048
 #define JTAG_UART_IRQ 0
 #define JTAG_UART_IRQ_INTERRUPT_CONTROLLER_ID 0
 #define JTAG_UART_NAME "/dev/JTAG_UART"
@@ -261,19 +288,19 @@
 #define ALT_NUM_INTERNAL_INTERRUPT_CONTROLLERS 1
 #define ALT_NUM_INTERRUPT_CONTROLLERS 1
 #define ALT_STDERR "/dev/JTAG_UART"
-#define ALT_STDERR_BASE 0x11038
+#define ALT_STDERR_BASE 0x11048
 #define ALT_STDERR_DEV JTAG_UART
 #define ALT_STDERR_IS_JTAG_UART
 #define ALT_STDERR_PRESENT
 #define ALT_STDERR_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDIN "/dev/JTAG_UART"
-#define ALT_STDIN_BASE 0x11038
+#define ALT_STDIN_BASE 0x11048
 #define ALT_STDIN_DEV JTAG_UART
 #define ALT_STDIN_IS_JTAG_UART
 #define ALT_STDIN_PRESENT
 #define ALT_STDIN_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDOUT "/dev/JTAG_UART"
-#define ALT_STDOUT_BASE 0x11038
+#define ALT_STDOUT_BASE 0x11048
 #define ALT_STDOUT_DEV JTAG_UART
 #define ALT_STDOUT_IS_JTAG_UART
 #define ALT_STDOUT_PRESENT
