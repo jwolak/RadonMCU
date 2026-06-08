@@ -40,7 +40,7 @@ int main()
     log_set_timestamp_provider(alt_nticks);
   }
 
-  LOGI("EquiniosLogger singleton ready");
+  LOG_INFO("EquiniosLogger singleton ready");
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();
 

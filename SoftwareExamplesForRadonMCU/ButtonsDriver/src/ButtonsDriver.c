@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,53 +30,42 @@
  *
  */
 
-#include "KnightRiderLight.h"
+#include "ButtonsDriver.h"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
 #include "equinios.hpp"
 
-uint32_t get_led_value(struct KnightRiderLight *this)
+#define BUTTON_RIGHT_MASK (1u << 0)
+#define BUTTON_LEFT_MASK (1u << 1)
+#define BUTTON_RESET_MASK (1u << 2)
+
+ButtonState get_reset_button_status(struct ButtonsDriver *self)
 {
-  static uint32_t led_value = 0x1;
-  static int8_t direction = 1;
-
-  if (direction > 0)
-  {
-    if (led_value == 0x8)
-    {
-      direction = -1;
-      led_value >>= 1;
-    }
-    else
-    {
-      led_value <<= 1;
-    }
-  }
-  else
-  {
-    if (led_value == 0x1)
-    {
-      direction = 1;
-      led_value <<= 1;
-    }
-    else
-    {
-      led_value >>= 1;
-    }
-  }
-
-  LOG_DEBUG("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
-
-  return led_value;
+  LOG_TRACE("[ButtonsDriver] get_reset_button_status() called...");
+  return self->button_state_reader.get_button_status(BUTTON_RESET_MASK);
 }
 
-static struct KnightRiderLight newKnightRiderLight(void)
+ButtonState get_left_button_status(struct ButtonsDriver *self)
 {
-  LOG_INFO("KnightRiderLight initialized");
-
-  return (struct KnightRiderLight){
-      .get_led_value = get_led_value,
-  };
+  LOG_TRACE("[ButtonsDriver] get_left_button_status() called...");
+  return self->button_state_reader.get_button_status(BUTTON_LEFT_MASK);
 }
 
-const struct KnightRiderLightClass KnightRiderLight = {
-    .new = newKnightRiderLight,
-};
+ButtonState get_right_button_status(struct ButtonsDriver *self)
+{
+  LOG_TRACE("[ButtonsDriver] get_right_button_status() called...");
+  return self->button_state_reader.get_button_status(BUTTON_RIGHT_MASK);
+}
+
+static struct ButtonsDriver newButtonsDriver(void)
+{
+  struct ButtonsDriver driver;
+
+  driver.get_reset_button_status = get_reset_button_status;
+  driver.get_left_button_status = get_left_button_status;
+  driver.get_right_button_status = get_right_button_status;
+
+  return driver;
+}
+
+const struct ButtonsDriverClass ButtonsDriver = {.new = newButtonsDriver};

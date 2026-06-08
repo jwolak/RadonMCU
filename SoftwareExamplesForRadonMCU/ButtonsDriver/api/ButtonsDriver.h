@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,53 +30,29 @@
  *
  */
 
-#include "KnightRiderLight.h"
-#include "equinios.hpp"
+#ifndef __BUTTONSDRIVER_H_
+#define __BUTTONSDRIVER_H_
 
-uint32_t get_led_value(struct KnightRiderLight *this)
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "ButtonStatusType.h"
+#include "ButtonStateReader.h"
+
+struct ButtonsDriver
 {
-  static uint32_t led_value = 0x1;
-  static int8_t direction = 1;
+  /* public members */
+  ButtonState (*get_reset_button_status)(struct ButtonsDriver *self);
+  ButtonState (*get_left_button_status)(struct ButtonsDriver *self);
+  ButtonState (*get_right_button_status)(struct ButtonsDriver *self);
 
-  if (direction > 0)
-  {
-    if (led_value == 0x8)
-    {
-      direction = -1;
-      led_value >>= 1;
-    }
-    else
-    {
-      led_value <<= 1;
-    }
-  }
-  else
-  {
-    if (led_value == 0x1)
-    {
-      direction = 1;
-      led_value <<= 1;
-    }
-    else
-    {
-      led_value >>= 1;
-    }
-  }
-
-  LOG_DEBUG("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
-
-  return led_value;
-}
-
-static struct KnightRiderLight newKnightRiderLight(void)
-{
-  LOG_INFO("KnightRiderLight initialized");
-
-  return (struct KnightRiderLight){
-      .get_led_value = get_led_value,
-  };
-}
-
-const struct KnightRiderLightClass KnightRiderLight = {
-    .new = newKnightRiderLight,
+  /* private members */
+  struct ButtonStateReader button_state_reader;
 };
+
+extern const struct ButtonsDriverClass
+{
+  struct ButtonsDriver (*new)(void);
+} ButtonsDriver;
+
+#endif /* __BUTTONSDRIVER_H_ */

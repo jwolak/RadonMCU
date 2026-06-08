@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,53 +30,27 @@
  *
  */
 
-#include "KnightRiderLight.h"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
+
+#include "ButtonStateReader.h"
 #include "equinios.hpp"
 
-uint32_t get_led_value(struct KnightRiderLight *this)
+ButtonState get_button_status(uint32_t button_mask)
 {
-  static uint32_t led_value = 0x1;
-  static int8_t direction = 1;
+  LOG_TRACE("[ButtonStateReader] get_button_status() called...");
 
-  if (direction > 0)
-  {
-    if (led_value == 0x8)
-    {
-      direction = -1;
-      led_value >>= 1;
-    }
-    else
-    {
-      led_value <<= 1;
-    }
-  }
-  else
-  {
-    if (led_value == 0x1)
-    {
-      direction = 1;
-      led_value <<= 1;
-    }
-    else
-    {
-      led_value >>= 1;
-    }
-  }
-
-  LOG_DEBUG("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
-
-  return led_value;
+  LOG_DEBUG("[ButtonStateReader] Getting button status for mask: 0x%08X", button_mask);
+  /* INPUT PIO bits are active-low: 0 means pressed. */
+  uint32_t input_value = IORD_ALTERA_AVALON_PIO_DATA(INPUT_BASE);
+  return ((input_value & button_mask) == 0u) ? BUTTON_PRESSED : BUTTON_RELEASED;
 }
 
-static struct KnightRiderLight newKnightRiderLight(void)
+static struct ButtonStateReader newButtonStateReader(void)
 {
-  LOG_INFO("KnightRiderLight initialized");
-
-  return (struct KnightRiderLight){
-      .get_led_value = get_led_value,
-  };
+  struct ButtonStateReader button_state_reader;
+  button_state_reader.get_button_status = get_button_status;
+  return button_state_reader;
 }
 
-const struct KnightRiderLightClass KnightRiderLight = {
-    .new = newKnightRiderLight,
-};
+const struct ButtonStateReaderClass ButtonStateReader = {.new = newButtonStateReader};
