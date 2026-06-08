@@ -53,6 +53,12 @@ int main()
     uint32_t led_value = knight_rider_light.get_led_value(&knight_rider_light);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
     alt_busy_sleep(LED_DELAY);
+
+    if (buttons_driver.get_reset_button_status(&buttons_driver) == BUTTON_PRESSED)
+    {
+      LOG_INFO("Reset button pressed, resetting Knight Rider pattern");
+      knight_rider_light = KnightRiderLight.new();
+    }
   }
 
   return 0;

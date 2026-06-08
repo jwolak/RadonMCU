@@ -35,9 +35,9 @@
 #include "altera_avalon_pio_regs.h"
 #include "equinios.hpp"
 
-#define BUTTON_RIGHT_MASK (1u << 0)
+#define BUTTON_RIGHT_MASK (1u << 2)
 #define BUTTON_LEFT_MASK (1u << 1)
-#define BUTTON_RESET_MASK (1u << 2)
+#define BUTTON_RESET_MASK (1u << 0)
 
 ButtonState get_reset_button_status(struct ButtonsDriver *self)
 {

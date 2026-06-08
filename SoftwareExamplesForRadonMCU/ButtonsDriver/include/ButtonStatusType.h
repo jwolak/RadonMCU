@@ -35,8 +35,8 @@
 
 typedef enum ButtonState
 {
-  BUTTON_RELEASED = 0,
-  BUTTON_PRESSED = 1
+  BUTTON_RELEASED = 1,
+  BUTTON_PRESSED = 0
 } ButtonState;
 
 #endif /* __BUTTONSTATUSTYPE_H_ */
