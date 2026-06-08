@@ -63,7 +63,7 @@ ButtonState get_right_button_status(struct ButtonsDriver *self)
   return get_button_state(BUTTON_RIGHT_MASK);
 }
 
-static struct ButtonsDriver createButtonsDriver(void)
+static struct ButtonsDriver newButtonsDriver(void)
 {
   struct ButtonsDriver driver;
 
@@ -74,4 +74,4 @@ static struct ButtonsDriver createButtonsDriver(void)
   return driver;
 }
 
-const struct ButtonsDriverClass ButtonsDriver = {createButtonsDriver};
+const struct ButtonsDriverClass ButtonsDriver = {.new = newButtonsDriver};

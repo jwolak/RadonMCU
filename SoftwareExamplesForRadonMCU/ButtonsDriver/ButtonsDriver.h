@@ -48,7 +48,7 @@ struct ButtonsDriver
 
 extern const struct ButtonsDriverClass
 {
-  struct ButtonsDriver (*create)(void);
+  struct ButtonsDriver (*new)(void);
 } ButtonsDriver;
 
 #endif /* __BUTTONSDRIVER_H_ */

@@ -9,14 +9,14 @@ OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
 CROSS_COMPILE ?= nios2-elf-
-CXX := $(CROSS_COMPILE)g++
+CC := $(CROSS_COMPILE)gcc
 AR := $(CROSS_COMPILE)ar
 MAKE ?= make
 RM ?= rm -f
 RMDIR ?= rm -rf
 MKDIR_P ?= mkdir -p
 
-CXXFLAGS ?= -Os -Wall -ffunction-sections -fdata-sections -I. -I$(LOGGER_DIR)/api -I../RadonHelloWorld_bsp -I../RadonHelloWorld_bsp/drivers/inc -I../RadonHelloWorld_bsp/HAL/inc
+CFLAGS ?= -Os -Wall -ffunction-sections -fdata-sections -I. -I$(LOGGER_DIR)/api -I../RadonHelloWorld_bsp -I../RadonHelloWorld_bsp/drivers/inc -I../RadonHelloWorld_bsp/HAL/inc
 
 .PHONY: all clean logger
 
@@ -38,7 +38,7 @@ $(BUILD_DIR):
 	$(MKDIR_P) $@
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -MMD -MP -x c++ -c -o $@ $<
+	$(CC) $(CFLAGS) -MMD -MP -c -o $@ $<
 
 -include $(DEPS)
 
