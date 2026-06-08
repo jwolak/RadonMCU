@@ -30,38 +30,22 @@
  *
  */
 
-#include "ButtonsDriver.h"
-#include "system.h"
-#include "altera_avalon_pio_regs.h"
+#ifndef __BUTTONSTATEREADER_H_
+#define __BUTTONSTATEREADER_H_
 
-#define BUTTON_RIGHT_MASK (1u << 0)
-#define BUTTON_LEFT_MASK (1u << 1)
-#define BUTTON_RESET_MASK (1u << 2)
+#include <stdint.h>
 
-ButtonState get_reset_button_status(struct ButtonsDriver *self)
+#include "ButtonStatusType.h"
+
+struct ButtonStateReader
 {
-  return self->button_state_reader.get_button_status(BUTTON_RESET_MASK);
-}
+  /* public members */
+  ButtonState (*get_button_status)(uint32_t button_mask);
+};
 
-ButtonState get_left_button_status(struct ButtonsDriver *self)
+extern const struct ButtonStateReaderClass
 {
-  return self->button_state_reader.get_button_status(BUTTON_LEFT_MASK);
-}
+  struct ButtonStateReader (*new)();
+} ButtonStateReader;
 
-ButtonState get_right_button_status(struct ButtonsDriver *self)
-{
-  return self->button_state_reader.get_button_status(BUTTON_RIGHT_MASK);
-}
-
-static struct ButtonsDriver newButtonsDriver(void)
-{
-  struct ButtonsDriver driver;
-
-  driver.get_reset_button_status = get_reset_button_status;
-  driver.get_left_button_status = get_left_button_status;
-  driver.get_right_button_status = get_right_button_status;
-
-  return driver;
-}
-
-const struct ButtonsDriverClass ButtonsDriver = {.new = newButtonsDriver};
+#endif /* __BUTTONSTATEREADER_H_ */

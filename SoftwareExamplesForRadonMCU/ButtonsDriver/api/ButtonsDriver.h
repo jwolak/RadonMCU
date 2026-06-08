@@ -37,6 +37,7 @@
 #include <stdint.h>
 
 #include "ButtonStatusType.h"
+#include "ButtonStateReader.h"
 
 struct ButtonsDriver
 {
@@ -44,6 +45,9 @@ struct ButtonsDriver
   ButtonState (*get_reset_button_status)(struct ButtonsDriver *self);
   ButtonState (*get_left_button_status)(struct ButtonsDriver *self);
   ButtonState (*get_right_button_status)(struct ButtonsDriver *self);
+
+  /* private members */
+  struct ButtonStateReader button_state_reader;
 };
 
 extern const struct ButtonsDriverClass
