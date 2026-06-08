@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,53 +30,29 @@
  *
  */
 
-#include "KnightRiderLight.h"
+#include "ButtonsDriver.h"
 #include "equinios.hpp"
 
-uint32_t get_led_value(struct KnightRiderLight *this)
+ButtonState get_reset_button_status(struct ButtonsDriver *this)
 {
-  static uint32_t led_value = 0x1;
-  static int8_t direction = 1;
-
-  if (direction > 0)
-  {
-    if (led_value == 0x8)
-    {
-      direction = -1;
-      led_value >>= 1;
-    }
-    else
-    {
-      led_value <<= 1;
-    }
-  }
-  else
-  {
-    if (led_value == 0x1)
-    {
-      direction = 1;
-      led_value <<= 1;
-    }
-    else
-    {
-      led_value >>= 1;
-    }
-  }
-
-  LOG_DEBUG("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
-
-  return led_value;
+  return equinios::get_reset_button_status();
 }
 
-static struct KnightRiderLight newKnightRiderLight(void)
+ButtonState get_left_button_status(struct ButtonsDriver *this)
 {
-  LOG_INFO("KnightRiderLight initialized");
-
-  return (struct KnightRiderLight){
-      .get_led_value = get_led_value,
-  };
+  return equinios::get_left_button_status();
 }
 
-const struct KnightRiderLightClass KnightRiderLight = {
-    .new = newKnightRiderLight,
-};
+ButtonState get_right_button_status(struct ButtonsDriver *this)
+{
+  return equinios::get_right_button_status();
+}
+
+static struct ButtonsDriver newButtonsDriver()
+{
+  return (struct ButtonsDriver){.get_reset_button_status = get_reset_button_status,
+                                .get_left_button_status = get_left_button_status,
+                                .get_right_button_status = get_right_button_status};
+}
+
+const struct ButtonsDriverClass ButtonsDriver = {.new = newButtonsDriver};
