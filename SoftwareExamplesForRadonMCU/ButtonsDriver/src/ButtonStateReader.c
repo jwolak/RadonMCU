@@ -34,9 +34,13 @@
 #include "altera_avalon_pio_regs.h"
 
 #include "ButtonStateReader.h"
+#include "equinios.hpp"
 
 ButtonState get_button_status(uint32_t button_mask)
 {
+  LOG_TRACE("[ButtonStateReader] get_button_status() called...");
+
+  LOG_DEBUG("[ButtonStateReader] Getting button status for mask: 0x%08X", button_mask);
   /* INPUT PIO bits are active-low: 0 means pressed. */
   uint32_t input_value = IORD_ALTERA_AVALON_PIO_DATA(INPUT_BASE);
   return ((input_value & button_mask) == 0u) ? BUTTON_PRESSED : BUTTON_RELEASED;

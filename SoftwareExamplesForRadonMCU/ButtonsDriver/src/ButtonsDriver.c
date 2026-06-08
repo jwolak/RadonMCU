@@ -33,6 +33,7 @@
 #include "ButtonsDriver.h"
 #include "system.h"
 #include "altera_avalon_pio_regs.h"
+#include "equinios.hpp"
 
 #define BUTTON_RIGHT_MASK (1u << 0)
 #define BUTTON_LEFT_MASK (1u << 1)
@@ -40,16 +41,19 @@
 
 ButtonState get_reset_button_status(struct ButtonsDriver *self)
 {
+  LOG_TRACE("[ButtonsDriver] get_reset_button_status() called...");
   return self->button_state_reader.get_button_status(BUTTON_RESET_MASK);
 }
 
 ButtonState get_left_button_status(struct ButtonsDriver *self)
 {
+  LOG_TRACE("[ButtonsDriver] get_left_button_status() called...");
   return self->button_state_reader.get_button_status(BUTTON_LEFT_MASK);
 }
 
 ButtonState get_right_button_status(struct ButtonsDriver *self)
 {
+  LOG_TRACE("[ButtonsDriver] get_right_button_status() called...");
   return self->button_state_reader.get_button_status(BUTTON_RIGHT_MASK);
 }
 
