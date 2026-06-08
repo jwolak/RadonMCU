@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include "KnightRiderLight/KnightRiderLight.h"
+#include "ButtonsDriver.hpp"
 #include "equinios.hpp"
 
 #include <stdint.h>
@@ -43,6 +44,7 @@ int main()
   LOG_INFO("EquiniosLogger singleton ready");
 
   struct KnightRiderLight knight_rider_light = KnightRiderLight.new();
+  struct ButtonsDriver buttons_driver = ButtonsDriver.new();
 
   while (true)
   {
