@@ -4,8 +4,8 @@ LOGGER_LIB := $(LOGGER_DIR)/libEquiniosLogger.a
 BUILD_DIR := build
 LOGGER_OBJ_DIR := $(BUILD_DIR)/logger_objs
 
-SRCS := $(wildcard *.c)
-OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRCS))
+SRCS := $(wildcard src/*.c)
+OBJS := $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
 CROSS_COMPILE ?= nios2-elf-
@@ -16,7 +16,7 @@ RM ?= rm -f
 RMDIR ?= rm -rf
 MKDIR_P ?= mkdir -p
 
-CFLAGS ?= -Os -Wall -ffunction-sections -fdata-sections -I. -I$(LOGGER_DIR)/api -I../RadonHelloWorld_bsp -I../RadonHelloWorld_bsp/drivers/inc -I../RadonHelloWorld_bsp/HAL/inc
+CFLAGS ?= -Os -Wall -ffunction-sections -fdata-sections -I. -Iinclude -Iapi -I$(LOGGER_DIR)/api -I../RadonHelloWorld_bsp -I../RadonHelloWorld_bsp/drivers/inc -I../RadonHelloWorld_bsp/HAL/inc
 
 .PHONY: all clean logger
 
@@ -37,7 +37,7 @@ $(LIB_NAME): Makefile $(OBJS) $(LOGGER_LIB)
 $(BUILD_DIR):
 	$(MKDIR_P) $@
 
-$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: src/%.c Makefile | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -MMD -MP -c -o $@ $<
 
 -include $(DEPS)
