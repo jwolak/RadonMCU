@@ -16,7 +16,7 @@ RM ?= rm -f
 RMDIR ?= rm -rf
 MKDIR_P ?= mkdir -p
 
-CXXFLAGS ?= -Os -Wall -ffunction-sections -fdata-sections -I. -I$(LOGGER_DIR)/api
+CXXFLAGS ?= -Os -Wall -ffunction-sections -fdata-sections -I. -I$(LOGGER_DIR)/api -I../RadonHelloWorld_bsp -I../RadonHelloWorld_bsp/drivers/inc -I../RadonHelloWorld_bsp/HAL/inc
 
 .PHONY: all clean logger
 

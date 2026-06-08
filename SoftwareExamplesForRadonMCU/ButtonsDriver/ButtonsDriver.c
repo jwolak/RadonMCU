@@ -31,28 +31,47 @@
  */
 
 #include "ButtonsDriver.h"
-#include "equinios.hpp"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
 
-ButtonState get_reset_button_status(struct ButtonsDriver *this)
+/* INPUT PIO bits are active-low: 0 means pressed. */
+#define BUTTON_RIGHT_MASK (1u << 0)
+#define BUTTON_LEFT_MASK (1u << 1)
+#define BUTTON_RESET_MASK (1u << 2)
+
+static ButtonState get_button_state(uint32_t mask)
 {
-  return equinios::get_reset_button_status();
+  uint32_t input_value = IORD_ALTERA_AVALON_PIO_DATA(INPUT_BASE);
+  return ((input_value & mask) == 0u) ? BUTTON_PRESSED : BUTTON_RELEASED;
 }
 
-ButtonState get_left_button_status(struct ButtonsDriver *this)
+ButtonState get_reset_button_status(struct ButtonsDriver *self)
 {
-  return equinios::get_left_button_status();
+  (void)self;
+  return get_button_state(BUTTON_RESET_MASK);
 }
 
-ButtonState get_right_button_status(struct ButtonsDriver *this)
+ButtonState get_left_button_status(struct ButtonsDriver *self)
 {
-  return equinios::get_right_button_status();
+  (void)self;
+  return get_button_state(BUTTON_LEFT_MASK);
 }
 
-static struct ButtonsDriver newButtonsDriver()
+ButtonState get_right_button_status(struct ButtonsDriver *self)
 {
-  return (struct ButtonsDriver){.get_reset_button_status = get_reset_button_status,
-                                .get_left_button_status = get_left_button_status,
-                                .get_right_button_status = get_right_button_status};
+  (void)self;
+  return get_button_state(BUTTON_RIGHT_MASK);
 }
 
-const struct ButtonsDriverClass ButtonsDriver = {.new = newButtonsDriver};
+static struct ButtonsDriver createButtonsDriver(void)
+{
+  struct ButtonsDriver driver;
+
+  driver.get_reset_button_status = get_reset_button_status;
+  driver.get_left_button_status = get_left_button_status;
+  driver.get_right_button_status = get_right_button_status;
+
+  return driver;
+}
+
+const struct ButtonsDriverClass ButtonsDriver = {createButtonsDriver};

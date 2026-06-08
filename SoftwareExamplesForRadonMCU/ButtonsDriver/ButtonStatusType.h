@@ -33,10 +33,10 @@
 #ifndef __BUTTONSTATUSTYPE_H_
 #define __BUTTONSTATUSTYPE_H_
 
-enum ButtonState
+typedef enum ButtonState
 {
   BUTTON_RELEASED = 0,
   BUTTON_PRESSED = 1
-};
+} ButtonState;
 
 #endif /* __BUTTONSTATUSTYPE_H_ */

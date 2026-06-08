@@ -41,14 +41,14 @@
 struct ButtonsDriver
 {
   /* public members */
-  ButtonState (*get_reset_button_status)(struct ButtonsDriver *this);
-  ButtonState (*get_left_button_status)(struct ButtonsDriver *this);
-  ButtonState (*get_right_button_status)(struct ButtonsDriver *this);
+  ButtonState (*get_reset_button_status)(struct ButtonsDriver *self);
+  ButtonState (*get_left_button_status)(struct ButtonsDriver *self);
+  ButtonState (*get_right_button_status)(struct ButtonsDriver *self);
 };
 
 extern const struct ButtonsDriverClass
 {
-  struct ButtonsDriver (*new)();
+  struct ButtonsDriver (*create)(void);
 } ButtonsDriver;
 
 #endif /* __BUTTONSDRIVER_H_ */
