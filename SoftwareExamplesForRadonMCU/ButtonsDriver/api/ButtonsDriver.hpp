@@ -30,13 +30,10 @@
  *
  */
 
-#ifndef __BUTTONSTATUSTYPE_H_
-#define __BUTTONSTATUSTYPE_H_
+#ifndef BUTTONSDRIVER_HPP
+#define BUTTONSDRIVER_HPP
 
-typedef enum ButtonState
-{
-  BUTTON_RELEASED = 1,
-  BUTTON_PRESSED = 0
-} ButtonState;
+/* Public umbrella header for application code. */
+#include "../include/buttonsdriver.h"
 
-#endif /* __BUTTONSTATUSTYPE_H_ */
+#endif
