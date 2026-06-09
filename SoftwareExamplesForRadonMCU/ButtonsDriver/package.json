@@ -1,0 +1,10 @@
+{
+  "name": "ButtonsDriver",
+  "version": "1.0.0",
+  "description": "Buttons driver for RadonMCU",
+  "main": "src/buttons.c",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "license": "BSD-3-Clause"
+}
