@@ -64,6 +64,7 @@ static struct ButtonsDriver newButtonsDriver(void)
   driver.get_reset_button_status = get_reset_button_status;
   driver.get_left_button_status = get_left_button_status;
   driver.get_right_button_status = get_right_button_status;
+  driver.button_state_reader = ButtonStateReader.new();
 
   return driver;
 }
