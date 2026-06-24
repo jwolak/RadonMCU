@@ -37,18 +37,46 @@
 
 void set_led0_state(struct LedDriver *self, LedState state)
 {
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(0x1);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(0x0);
 }
 
 void set_led1_state(struct LedDriver *self, LedState state)
 {
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(0x2);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(0x0);
 }
 
 void set_led2_state(struct LedDriver *self, LedState state)
 {
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(0x4);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(0x0);
 }
 
 void set_led3_state(struct LedDriver *self, LedState state)
 {
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(0x8);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(0x0);
 }
 
 static struct LedDriver newLedDriver(void)
