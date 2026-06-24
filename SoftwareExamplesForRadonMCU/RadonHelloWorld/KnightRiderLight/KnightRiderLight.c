@@ -32,40 +32,60 @@
 
 #include "KnightRiderLight.h"
 #include "equinios.hpp"
+#include "LedDriver.h"
+#include "priv/alt_busy_sleep.h"
 
-uint32_t get_led_value(struct KnightRiderLight *this)
+#define LED_DELAY 100000U
+
+void run_knight_rider_cycle(struct KnightRiderLight *this)
 {
-  static uint32_t led_value = 0x1;
-  static int8_t direction = 1;
+  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
 
-  if (direction > 0)
-  {
-    if (led_value == 0x8)
-    {
-      direction = -1;
-      led_value >>= 1;
-    }
-    else
-    {
-      led_value <<= 1;
-    }
-  }
-  else
-  {
-    if (led_value == 0x1)
-    {
-      direction = 1;
-      led_value <<= 1;
-    }
-    else
-    {
-      led_value >>= 1;
-    }
-  }
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
 
-  LOG_DEBUG("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
 
-  return led_value;
+  this->led_driver.set_led3_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  /* Keep last LED on so there is no dark pause between cycles. */
+}
+
+void run_knight_rider_cycle_smooth(struct KnightRiderLight *this)
+{
+  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led3_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
 }
 
 static struct KnightRiderLight newKnightRiderLight(void)
@@ -73,7 +93,9 @@ static struct KnightRiderLight newKnightRiderLight(void)
   LOG_INFO("KnightRiderLight initialized");
 
   return (struct KnightRiderLight){
-      .get_led_value = get_led_value,
+      .run_knight_rider_cycle = run_knight_rider_cycle,
+      .run_knight_rider_cycle_smooth = run_knight_rider_cycle_smooth,
+      .led_driver = LedDriver.new(),
   };
 }
 

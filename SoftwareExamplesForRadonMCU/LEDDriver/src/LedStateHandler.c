@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,26 +30,25 @@
  *
  */
 
-#ifndef __KNIGHTRIDERLIGHT_H_
-#define __KNIGHTRIDERLIGHT_H_
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
 
-#include <stdint.h>
+#include "LedStateHandler.h"
+#include "equinios.hpp"
 
-#include "LedDriver.h"
-
-struct KnightRiderLight
+void set_leds_state(uint32_t leds_mask)
 {
-  /* public members */
-  void (*run_knight_rider_cycle)(struct KnightRiderLight *this);
-  void (*run_knight_rider_cycle_smooth)(struct KnightRiderLight *this);
+  LOG_TRACE("[LedStateHandler] set_leds_state() called...");
 
-  /* private members */
-  struct LedDriver led_driver;
-};
+  IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~leds_mask) & 0xF);
+  LOG_DEBUG("[LedStateHandler] Setting LED state for mask: 0x%08X", leds_mask);
+}
 
-extern const struct KnightRiderLightClass
+static struct LedStateHandler newLedStateHandler(void)
 {
-  struct KnightRiderLight (*new)();
-} KnightRiderLight;
+  struct LedStateHandler led_state_handler;
+  led_state_handler.set_leds_state = set_leds_state;
+  return led_state_handler;
+}
 
-#endif /* __KNIGHTRIDERLIGHT_H_ */
+const struct LedStateHandlerClass LedStateHandler = {.new = newLedStateHandler};

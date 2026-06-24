@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,26 +30,10 @@
  *
  */
 
-#ifndef __KNIGHTRIDERLIGHT_H_
-#define __KNIGHTRIDERLIGHT_H_
+#ifndef LEDDRIVER_HPP
+#define LEDDRIVER_HPP
 
-#include <stdint.h>
+/* Public umbrella header for application code. */
+#include "../include/leddriver.h"
 
-#include "LedDriver.h"
-
-struct KnightRiderLight
-{
-  /* public members */
-  void (*run_knight_rider_cycle)(struct KnightRiderLight *this);
-  void (*run_knight_rider_cycle_smooth)(struct KnightRiderLight *this);
-
-  /* private members */
-  struct LedDriver led_driver;
-};
-
-extern const struct KnightRiderLightClass
-{
-  struct KnightRiderLight (*new)();
-} KnightRiderLight;
-
-#endif /* __KNIGHTRIDERLIGHT_H_ */
+#endif

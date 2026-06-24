@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,26 +30,30 @@
  *
  */
 
-#ifndef __KNIGHTRIDERLIGHT_H_
-#define __KNIGHTRIDERLIGHT_H_
+#ifndef __LEDDRIVER_H_
+#define __LEDDRIVER_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
-#include "LedDriver.h"
+#include "LedStatusType.h"
+#include "LedStateHandler.h"
 
-struct KnightRiderLight
+struct LedDriver
 {
   /* public members */
-  void (*run_knight_rider_cycle)(struct KnightRiderLight *this);
-  void (*run_knight_rider_cycle_smooth)(struct KnightRiderLight *this);
+  void (*set_led0_state)(struct LedDriver *self, LedState state);
+  void (*set_led1_state)(struct LedDriver *self, LedState state);
+  void (*set_led2_state)(struct LedDriver *self, LedState state);
+  void (*set_led3_state)(struct LedDriver *self, LedState state);
 
   /* private members */
-  struct LedDriver led_driver;
+  struct LedStateHandler led_state_handler;
 };
 
-extern const struct KnightRiderLightClass
+extern const struct LedDriverClass
 {
-  struct KnightRiderLight (*new)();
-} KnightRiderLight;
+  struct LedDriver (*new)(void);
+} LedDriver;
 
-#endif /* __KNIGHTRIDERLIGHT_H_ */
+#endif /* __LEDDRIVER_H_ */

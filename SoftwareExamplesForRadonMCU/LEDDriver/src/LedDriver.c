@@ -1,8 +1,8 @@
 /*-
  * BSD 3-Clause License
  *
- * No Copyrights 2026, Janusz Wolak
- * All rights not reserved.
+ * Copyrights 2026, Janusz Wolak
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,26 +30,72 @@
  *
  */
 
-#ifndef __KNIGHTRIDERLIGHT_H_
-#define __KNIGHTRIDERLIGHT_H_
-
-#include <stdint.h>
-
 #include "LedDriver.h"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
+#include "equinios.hpp"
 
-struct KnightRiderLight
+#define LED_0_ON 0x1
+#define LED_1_ON 0x2
+#define LED_2_ON 0x4
+#define LED_3_ON 0x8
+#define LED_OFF 0x0
+
+void set_led0_state(struct LedDriver *self, LedState state)
 {
-  /* public members */
-  void (*run_knight_rider_cycle)(struct KnightRiderLight *this);
-  void (*run_knight_rider_cycle_smooth)(struct KnightRiderLight *this);
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(LED_0_ON);
+    return;
+  }
 
-  /* private members */
+  self->led_state_handler.set_leds_state(LED_OFF);
+}
+
+void set_led1_state(struct LedDriver *self, LedState state)
+{
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(LED_1_ON);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(LED_OFF);
+}
+
+void set_led2_state(struct LedDriver *self, LedState state)
+{
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(LED_2_ON);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(LED_OFF);
+}
+
+void set_led3_state(struct LedDriver *self, LedState state)
+{
+  if (state == LED_ON)
+  {
+    self->led_state_handler.set_leds_state(LED_3_ON);
+    return;
+  }
+
+  self->led_state_handler.set_leds_state(LED_OFF);
+}
+
+static struct LedDriver newLedDriver(void)
+{
   struct LedDriver led_driver;
-};
 
-extern const struct KnightRiderLightClass
-{
-  struct KnightRiderLight (*new)();
-} KnightRiderLight;
+  led_driver.set_led0_state = set_led0_state;
+  led_driver.set_led1_state = set_led1_state;
+  led_driver.set_led2_state = set_led2_state;
+  led_driver.set_led3_state = set_led3_state;
+  led_driver.led_state_handler = LedStateHandler.new();
 
-#endif /* __KNIGHTRIDERLIGHT_H_ */
+  return led_driver;
+}
+
+const struct LedDriverClass LedDriver = {.new = newLedDriver};
