@@ -30,8 +30,8 @@
  *
  */
 
-#ifndef __BUTTONSDRIVER_H_
-#define __BUTTONSDRIVER_H_
+#ifndef __LEDDRIVER_H_
+#define __LEDDRIVER_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -39,21 +39,21 @@
 #include "LedStatusType.h"
 #include "LedStateHandler.h"
 
-struct ButtonsDriver
+struct LedDriver
 {
   /* public members */
-  bool (*set_led0_state)(struct ButtonsDriver *self, LedState state);
-  bool (*set_led1_state)(struct ButtonsDriver *self, LedState state);
-  bool (*set_led2_state)(struct ButtonsDriver *self, LedState state);
-  bool (*set_led3_state)(struct ButtonsDriver *self, LedState state);
+  bool (*set_led0_state)(struct LedDriver *self, LedState state);
+  bool (*set_led1_state)(struct LedDriver *self, LedState state);
+  bool (*set_led2_state)(struct LedDriver *self, LedState state);
+  bool (*set_led3_state)(struct LedDriver *self, LedState state);
 
   /* private members */
   struct LedStateHandler led_state_handler;
 };
 
-extern const struct ButtonsDriverClass
+extern const struct LedDriverClass
 {
-  struct ButtonsDriver (*new)(void);
-} ButtonsDriver;
+  struct LedDriver (*new)(void);
+} LedDriver;
 
-#endif /* __BUTTONSDRIVER_H_ */
+#endif /* __LEDDRIVER_H_ */

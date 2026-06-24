@@ -35,38 +35,32 @@
 #include "altera_avalon_pio_regs.h"
 #include "equinios.hpp"
 
-#define LED_RIGHT_MASK (1u << 2)
-#define LED_LEFT_MASK (1u << 1)
-#define LED_RESET_MASK (1u << 0)
-
-ButtonState get_reset_button_status(struct ButtonsDriver *self)
+bool set_led0_state(struct LedDriver *self, LedState state)
 {
-  LOG_TRACE("[ButtonsDriver] get_reset_button_status() called...");
-  return self->button_state_reader.get_button_status(BUTTON_RESET_MASK);
 }
 
-ButtonState get_left_button_status(struct ButtonsDriver *self)
+bool set_led1_state(struct LedDriver *self, LedState state)
 {
-  LOG_TRACE("[ButtonsDriver] get_left_button_status() called...");
-  return self->button_state_reader.get_button_status(BUTTON_LEFT_MASK);
 }
 
-ButtonState get_right_button_status(struct ButtonsDriver *self)
+bool set_led2_state(struct LedDriver *self, LedState state)
 {
-  LOG_TRACE("[ButtonsDriver] get_right_button_status() called...");
-  return self->button_state_reader.get_button_status(BUTTON_RIGHT_MASK);
 }
 
-static struct ButtonsDriver newButtonsDriver(void)
+bool set_led3_state(struct LedDriver *self, LedState state)
 {
-  struct ButtonsDriver driver;
-
-  driver.get_reset_button_status = get_reset_button_status;
-  driver.get_left_button_status = get_left_button_status;
-  driver.get_right_button_status = get_right_button_status;
-  driver.button_state_reader = ButtonStateReader.new();
-
-  return driver;
 }
 
-const struct ButtonsDriverClass ButtonsDriver = {.new = newButtonsDriver};
+static struct LedDriver newLedDriver(void)
+{
+  struct LedDriver led_driver;
+
+  led_driver.set_led0_state = set_led0_state;
+  led_driver.set_led1_state = set_led1_state;
+  led_driver.set_led2_state = set_led2_state;
+  led_driver.set_led3_state = set_led3_state;
+
+  return led_driver;
+}
+
+const struct LedDriverClass LedDriver = {.new = newLedDriver};
