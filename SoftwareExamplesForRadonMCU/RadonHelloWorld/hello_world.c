@@ -50,8 +50,7 @@ int main()
   {
     START_LOG_PROCESS();
 
-    knight_rider_light.shift_knight_rider_light_right(&knight_rider_light);
-    knight_rider_light.shift_knight_rider_light_left(&knight_rider_light);
+    knight_rider_light.run_knight_rider_cycle(&knight_rider_light);
 
     // uint32_t led_value = knight_rider_light.get_led_value(&knight_rider_light);
     // IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);

@@ -40,8 +40,7 @@
 struct KnightRiderLight
 {
   /* public members */
-  void (*shift_knight_rider_light_right)(struct KnightRiderLight *this);
-  void (*shift_knight_rider_light_left)(struct KnightRiderLight *this);
+  void (*run_knight_rider_cycle)(struct KnightRiderLight *this);
 
   /* private members */
   struct LedDriver led_driver;

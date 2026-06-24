@@ -37,30 +37,9 @@
 
 #define LED_DELAY 100000U
 
-void shift_knight_rider_light_right(struct KnightRiderLight *this)
+void run_knight_rider_cycle(struct KnightRiderLight *this)
 {
-  LOG_INFO("Shifting Knight Rider light pattern to the right...");
-
-  this->led_driver.set_led3_state(&this->led_driver, LED_ON);
-  alt_busy_sleep(LED_DELAY);
-  this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
-
-  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  alt_busy_sleep(LED_DELAY);
-  this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
-
-  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  alt_busy_sleep(LED_DELAY);
-  this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
-
-  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  alt_busy_sleep(LED_DELAY);
-  this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
-}
-
-void shift_knight_rider_light_left(struct KnightRiderLight *this)
-{
-  LOG_INFO("Shifting Knight Rider light pattern to the left...");
+  LOG_INFO("Running Knight Rider cycle...");
 
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
   alt_busy_sleep(LED_DELAY);
@@ -77,6 +56,14 @@ void shift_knight_rider_light_left(struct KnightRiderLight *this)
   this->led_driver.set_led3_state(&this->led_driver, LED_ON);
   alt_busy_sleep(LED_DELAY);
   this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
 }
 
 static struct KnightRiderLight newKnightRiderLight(void)
@@ -84,8 +71,7 @@ static struct KnightRiderLight newKnightRiderLight(void)
   LOG_INFO("KnightRiderLight initialized");
 
   return (struct KnightRiderLight){
-      .shift_knight_rider_light_right = shift_knight_rider_light_right,
-      .shift_knight_rider_light_left = shift_knight_rider_light_left,
+      .run_knight_rider_cycle = run_knight_rider_cycle,
       .led_driver = LedDriver.new(),
   };
 }
