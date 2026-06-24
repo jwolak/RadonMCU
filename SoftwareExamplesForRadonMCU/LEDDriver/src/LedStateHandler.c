@@ -33,24 +33,21 @@
 #include "system.h"
 #include "altera_avalon_pio_regs.h"
 
-#include "ButtonStateReader.h"
+#include "LedStateHandler.h"
 #include "equinios.hpp"
 
-ButtonState get_button_status(uint32_t button_mask)
+void set_leds_state(uint32_t leds_mask)
 {
-  LOG_TRACE("[ButtonStateReader] get_button_status() called...");
+  LOG_TRACE("[LedStateHandler] set_leds_state() called...");
 
-  LOG_DEBUG("[ButtonStateReader] Getting button status for mask: 0x%08X", button_mask);
-  /* INPUT PIO bits are active-low: 0 means pressed. */
-  uint32_t input_value = IORD_ALTERA_AVALON_PIO_DATA(INPUT_BASE);
-  return ((input_value & button_mask) == 0u) ? BUTTON_PRESSED : BUTTON_RELEASED;
+  LOG_DEBUG("[LedStateHandler] Setting LED state for mask: 0x%08X", leds_mask);
 }
 
-static struct ButtonStateReader newButtonStateReader(void)
+static struct LedStateHandler newLedStateHandler(void)
 {
-  struct ButtonStateReader button_state_reader;
-  button_state_reader.get_button_status = get_button_status;
-  return button_state_reader;
+  struct LedStateHandler led_state_handler;
+  led_state_handler.set_leds_state = set_leds_state;
+  return led_state_handler;
 }
 
-const struct ButtonStateReaderClass ButtonStateReader = {.new = newButtonStateReader};
+const struct LedStateHandlerClass LedStateHandler = {.new = newLedStateHandler};

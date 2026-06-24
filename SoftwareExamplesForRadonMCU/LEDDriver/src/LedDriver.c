@@ -35,19 +35,19 @@
 #include "altera_avalon_pio_regs.h"
 #include "equinios.hpp"
 
-bool set_led0_state(struct LedDriver *self, LedState state)
+void set_led0_state(struct LedDriver *self, LedState state)
 {
 }
 
-bool set_led1_state(struct LedDriver *self, LedState state)
+void set_led1_state(struct LedDriver *self, LedState state)
 {
 }
 
-bool set_led2_state(struct LedDriver *self, LedState state)
+void set_led2_state(struct LedDriver *self, LedState state)
 {
 }
 
-bool set_led3_state(struct LedDriver *self, LedState state)
+void set_led3_state(struct LedDriver *self, LedState state)
 {
 }
 
