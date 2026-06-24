@@ -50,16 +50,18 @@ int main()
   {
     START_LOG_PROCESS();
 
-    uint32_t led_value = knight_rider_light.get_led_value(&knight_rider_light);
-    IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
+    knight_rider_light.start_knight_rider_light(&knight_rider_light);
 
-    if (buttons_driver.get_reset_button_status(&buttons_driver) == BUTTON_PRESSED)
-    {
-      LOG_INFO("Reset button pressed. Interrupting Knight Rider light pattern...");
-      continue;
-    }
+    // uint32_t led_value = knight_rider_light.get_led_value(&knight_rider_light);
+    // IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~led_value) & 0xF);
 
-    alt_busy_sleep(LED_DELAY);
+    // if (buttons_driver.get_reset_button_status(&buttons_driver) == BUTTON_PRESSED)
+    // {
+    //   LOG_INFO("Reset button pressed. Interrupting Knight Rider light pattern...");
+    //   continue;
+    // }
+
+    // alt_busy_sleep(LED_DELAY);
   }
 
   return 0;

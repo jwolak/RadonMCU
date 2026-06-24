@@ -35,10 +35,15 @@
 
 #include <stdint.h>
 
+#include "LEDDriver.h"
+
 struct KnightRiderLight
 {
   /* public members */
-  uint32_t (*get_led_value)(struct KnightRiderLight *this);
+  void (*start_knight_rider_light)(struct KnightRiderLight *this);
+
+  /* private members */
+  LEDDriver led_driver;
 };
 
 extern const struct KnightRiderLightClass

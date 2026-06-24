@@ -32,40 +32,27 @@
 
 #include "KnightRiderLight.h"
 #include "equinios.hpp"
+#include "LedDriver.h"
 
-uint32_t get_led_value(struct KnightRiderLight *this)
+void start_knight_rider_light(struct KnightRiderLight *this)
 {
-  static uint32_t led_value = 0x1;
-  static int8_t direction = 1;
+  LOG_INFO("Starting Knight Rider light pattern...");
 
-  if (direction > 0)
-  {
-    if (led_value == 0x8)
-    {
-      direction = -1;
-      led_value >>= 1;
-    }
-    else
-    {
-      led_value <<= 1;
-    }
-  }
-  else
-  {
-    if (led_value == 0x1)
-    {
-      direction = 1;
-      led_value <<= 1;
-    }
-    else
-    {
-      led_value >>= 1;
-    }
-  }
+  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
 
-  LOG_DEBUG("KnightRiderLight led=0x%lx dir=%d", (unsigned long)led_value, direction);
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
 
-  return led_value;
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led3_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
 }
 
 static struct KnightRiderLight newKnightRiderLight(void)
@@ -73,7 +60,8 @@ static struct KnightRiderLight newKnightRiderLight(void)
   LOG_INFO("KnightRiderLight initialized");
 
   return (struct KnightRiderLight){
-      .get_led_value = get_led_value,
+      .start_knight_rider_light = start_knight_rider_light,
+      .led_driver = LEDDriver.new(),
   };
 }
 
