@@ -35,7 +35,7 @@
 
 #include <stdint.h>
 
-#include "LEDDriver.h"
+#include "LedDriver.h"
 
 struct KnightRiderLight
 {
@@ -43,7 +43,7 @@ struct KnightRiderLight
   void (*start_knight_rider_light)(struct KnightRiderLight *this);
 
   /* private members */
-  LEDDriver led_driver;
+  struct LedDriver led_driver;
 };
 
 extern const struct KnightRiderLightClass

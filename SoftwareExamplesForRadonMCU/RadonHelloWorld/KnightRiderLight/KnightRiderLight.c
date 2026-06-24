@@ -33,6 +33,9 @@
 #include "KnightRiderLight.h"
 #include "equinios.hpp"
 #include "LedDriver.h"
+#include "priv/alt_busy_sleep.h"
+
+#define LED_DELAY 100000U
 
 void start_knight_rider_light(struct KnightRiderLight *this)
 {
@@ -61,7 +64,7 @@ static struct KnightRiderLight newKnightRiderLight(void)
 
   return (struct KnightRiderLight){
       .start_knight_rider_light = start_knight_rider_light,
-      .led_driver = LEDDriver.new(),
+      .led_driver = LedDriver.new(),
   };
 }
 
