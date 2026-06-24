@@ -93,6 +93,7 @@ static struct LedDriver newLedDriver(void)
   led_driver.set_led1_state = set_led1_state;
   led_driver.set_led2_state = set_led2_state;
   led_driver.set_led3_state = set_led3_state;
+  led_driver.led_state_handler = LedStateHandler.new();
 
   return led_driver;
 }

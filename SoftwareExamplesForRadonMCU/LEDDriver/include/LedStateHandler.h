@@ -40,7 +40,7 @@
 struct LedStateHandler
 {
   /* public members */
-  LedState (*set_leds_state)(uint32_t leds_mask);
+  void (*set_leds_state)(uint32_t leds_mask);
 };
 
 extern const struct LedStateHandlerClass
