@@ -37,9 +37,30 @@
 
 #define LED_DELAY 100000U
 
-void start_knight_rider_light(struct KnightRiderLight *this)
+void shift_knight_rider_light_right(struct KnightRiderLight *this)
 {
-  LOG_INFO("Starting Knight Rider light pattern...");
+  LOG_INFO("Shifting Knight Rider light pattern to the right...");
+
+  this->led_driver.set_led3_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
+
+  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+  this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
+}
+
+void shift_knight_rider_light_left(struct KnightRiderLight *this)
+{
+  LOG_INFO("Shifting Knight Rider light pattern to the left...");
 
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
   alt_busy_sleep(LED_DELAY);
@@ -63,7 +84,8 @@ static struct KnightRiderLight newKnightRiderLight(void)
   LOG_INFO("KnightRiderLight initialized");
 
   return (struct KnightRiderLight){
-      .start_knight_rider_light = start_knight_rider_light,
+      .shift_knight_rider_light_right = shift_knight_rider_light_right,
+      .shift_knight_rider_light_left = shift_knight_rider_light_left,
       .led_driver = LedDriver.new(),
   };
 }
