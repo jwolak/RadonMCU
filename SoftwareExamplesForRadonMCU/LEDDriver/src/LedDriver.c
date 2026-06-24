@@ -35,48 +35,54 @@
 #include "altera_avalon_pio_regs.h"
 #include "equinios.hpp"
 
+#define LED_0_ON 0x1
+#define LED_1_ON 0x2
+#define LED_2_ON 0x4
+#define LED_3_ON 0x8
+#define LED_OFF 0x0
+
 void set_led0_state(struct LedDriver *self, LedState state)
 {
   if (state == LED_ON)
   {
-    self->led_state_handler.set_leds_state(0x1);
+    self->led_state_handler.set_leds_state(LED_0_ON);
     return;
   }
 
-  self->led_state_handler.set_leds_state(0x0);
+  self->led_state_handler.set_leds_state(LED_OFF);
 }
 
 void set_led1_state(struct LedDriver *self, LedState state)
 {
   if (state == LED_ON)
   {
-    self->led_state_handler.set_leds_state(0x2);
+    self->led_state_handler.set_leds_state(LED_1_ON);
     return;
   }
 
-  self->led_state_handler.set_leds_state(0x0);
+  self->led_state_handler.set_leds_state(LED_OFF);
 }
 
 void set_led2_state(struct LedDriver *self, LedState state)
 {
   if (state == LED_ON)
   {
-    self->led_state_handler.set_leds_state(0x4);
+    self->led_state_handler.set_leds_state(LED_2_ON);
     return;
   }
 
-  self->led_state_handler.set_leds_state(0x0);
+  self->led_state_handler.set_leds_state(LED_OFF);
 }
 
 void set_led3_state(struct LedDriver *self, LedState state)
 {
   if (state == LED_ON)
   {
-    self->led_state_handler.set_leds_state(0x8);
+    self->led_state_handler.set_leds_state(LED_3_ON);
     return;
   }
 
-  self->led_state_handler.set_leds_state(0x0);
+  self->led_state_handler.set_leds_state(LED_OFF);
 }
 
 static struct LedDriver newLedDriver(void)

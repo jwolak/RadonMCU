@@ -40,6 +40,7 @@ void set_leds_state(uint32_t leds_mask)
 {
   LOG_TRACE("[LedStateHandler] set_leds_state() called...");
 
+  IOWR_ALTERA_AVALON_PIO_DATA(PIO_BASE, (~leds_mask) & 0xF);
   LOG_DEBUG("[LedStateHandler] Setting LED state for mask: 0x%08X", leds_mask);
 }
 
