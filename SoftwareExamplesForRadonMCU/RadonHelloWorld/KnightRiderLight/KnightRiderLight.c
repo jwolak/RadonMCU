@@ -66,12 +66,38 @@ void run_knight_rider_cycle(struct KnightRiderLight *this)
   this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
 }
 
+void run_knight_rider_cycle_smooth(struct KnightRiderLight *this)
+{
+  LOG_INFO("Running Knight Rider smooth cycle...");
+
+  this->led_driver.set_led0_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led3_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led2_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led1_state(&this->led_driver, LED_ON);
+  alt_busy_sleep(LED_DELAY);
+
+  this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
+}
+
 static struct KnightRiderLight newKnightRiderLight(void)
 {
   LOG_INFO("KnightRiderLight initialized");
 
   return (struct KnightRiderLight){
       .run_knight_rider_cycle = run_knight_rider_cycle,
+      .run_knight_rider_cycle_smooth = run_knight_rider_cycle_smooth,
       .led_driver = LedDriver.new(),
   };
 }
