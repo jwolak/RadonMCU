@@ -33,7 +33,7 @@
 
 int main()
 {
-  log_set_level(LOG_LEVEL_DEBUG);
+  log_set_level(LOG_LEVEL_CRITICAL);
   LOG_INFO("Hello from Radon MCU!\n");
 
   if (alt_ticks_per_second() > 0u)
