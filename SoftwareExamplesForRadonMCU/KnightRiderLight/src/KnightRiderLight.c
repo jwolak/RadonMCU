@@ -44,22 +44,57 @@
 /* Get current timer value in microseconds */
 static uint32_t timer_get_us(void)
 {
-  uint32_t snap_l = IORD_ALTERA_AVALON_TIMER_SNAPL(TIMER_0_BASE);
+  /* Trigger snapshot by writing to SNAPH */
+  IOWR_ALTERA_AVALON_TIMER_SNAPH(TIMER_0_BASE, 0);
+
+  /* Read snapshot registers */
   uint32_t snap_h = IORD_ALTERA_AVALON_TIMER_SNAPH(TIMER_0_BASE);
-  uint32_t counter = (snap_h << 16) | snap_l;
-  /* TIMER_0 frequency is 50MHz, period = 20ns, so 50 ticks = 1us */
-  return counter / 50;
+  uint32_t snap_l = IORD_ALTERA_AVALON_TIMER_SNAPL(TIMER_0_BASE);
+
+  uint32_t timerValue = (snap_h << 16) | snap_l;
+
+  /* Timer period is 49999 ticks (1ms at 50MHz) */
+  /* Timer counts down from 49999 to 0 */
+  /* Elapsed microseconds in current period = (50000 - timerValue) / 50 */
+  uint32_t elapsed_us = (50000 - (timerValue % 50000)) / 50;
+
+  return elapsed_us;
 }
 
-/* Wait for specified microseconds using TIMER_0, returns actual elapsed time */
+/* Wait for specified microseconds using TIMER_0 */
 static uint32_t timer_wait_us(uint32_t microseconds)
 {
   uint32_t start = timer_get_us();
+  uint32_t current;
   uint32_t elapsed;
+  uint32_t loop_count = 0;
+
+  printf("Timer wait start: %lu us for %lu us\r\n", start, microseconds);
+
   do
   {
-    elapsed = timer_get_us() - start;
+    current = timer_get_us();
+    loop_count++;
+
+    /* Handle potential timer overflow */
+    if (current >= start)
+    {
+      elapsed = current - start;
+    }
+    else
+    {
+      elapsed = (0xFFFFFFFFUL - start) + current;
+    }
+
+    /* Safety timeout - 100ms */
+    if (loop_count > 100000000)
+    {
+      printf("TIMEOUT! loops=%lu, elapsed=%lu us\r\n", loop_count, elapsed);
+      break;
+    }
   } while (elapsed < microseconds);
+
+  printf("Timer wait end: elapsed=%lu us, loops=%lu\r\n", elapsed, loop_count);
   return elapsed;
 }
 
@@ -117,6 +152,12 @@ void run_knight_rider_cycle_smooth(struct KnightRiderLight *this)
 static struct KnightRiderLight newKnightRiderLight(void)
 {
   LOG_INFO("KnightRiderLight initialized");
+
+  /* Start TIMER_0 with ITO, CONT and START bits */
+  uint32_t control = ALTERA_AVALON_TIMER_CONTROL_ITO_MSK | ALTERA_AVALON_TIMER_CONTROL_CONT_MSK |
+                     ALTERA_AVALON_TIMER_CONTROL_START_MSK;
+  IOWR_ALTERA_AVALON_TIMER_CONTROL(TIMER_0_BASE, control);
+  printf("TIMER_0 started with ITO, CONT, START\r\n");
 
   return (struct KnightRiderLight){
       .run_knight_rider_cycle = run_knight_rider_cycle,
