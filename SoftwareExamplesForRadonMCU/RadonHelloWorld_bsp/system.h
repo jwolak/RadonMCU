@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'RadonMCUSystemDesign'
  * SOPC Builder design path: C:/Users/jwolak/Documents/FPGA/repositories/RadonMCU/RadonMCUSystemDesign/RadonMCUSystemDesign.sopcinfo
  *
- * Generated: Thu Jun 25 19:24:40 CEST 2026
+ * Generated: Thu Jun 25 19:51:44 CEST 2026
  */
 
 /*
@@ -154,7 +154,7 @@
 #define CPU_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define CPU_ID_NAME "/dev/CPU_ID"
 #define CPU_ID_SPAN 8
-#define CPU_ID_TIMESTAMP 1782407381
+#define CPU_ID_TIMESTAMP 1782409728
 #define CPU_ID_TYPE "altera_avalon_sysid_qsys"
 
 
@@ -322,15 +322,15 @@
 #define TIMER_0_FREQ 50000000
 #define TIMER_0_IRQ 1
 #define TIMER_0_IRQ_INTERRUPT_CONTROLLER_ID 0
-#define TIMER_0_LOAD_VALUE 49999
-#define TIMER_0_MULT 0.001
+#define TIMER_0_LOAD_VALUE 49
+#define TIMER_0_MULT 1.0E-6
 #define TIMER_0_NAME "/dev/TIMER_0"
 #define TIMER_0_PERIOD 1
-#define TIMER_0_PERIOD_UNITS "ms"
+#define TIMER_0_PERIOD_UNITS "us"
 #define TIMER_0_RESET_OUTPUT 0
 #define TIMER_0_SNAPSHOT 1
 #define TIMER_0_SPAN 32
-#define TIMER_0_TICKS_PER_SEC 1000
+#define TIMER_0_TICKS_PER_SEC 1000000
 #define TIMER_0_TIMEOUT_PULSE_OUTPUT 0
 #define TIMER_0_TYPE "altera_avalon_timer"
 

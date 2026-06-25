@@ -620,7 +620,7 @@
   <parameter name="counterSize" value="32" />
   <parameter name="fixedPeriod" value="false" />
   <parameter name="period" value="1" />
-  <parameter name="periodUnits" value="MSEC" />
+  <parameter name="periodUnits" value="USEC" />
   <parameter name="resetOutput" value="false" />
   <parameter name="snapshot" value="true" />
   <parameter name="systemFrequency" value="50000000" />

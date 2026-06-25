@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>2026-06-25 19:24:38</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1782408278403</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>2026-06-25 19:51:43</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1782409903773</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>C:\Users\jwolak\Documents\FPGA\repositories\RadonMCU\SoftwareExamplesForRadonMCU\RadonHelloWorld_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>C:\Users\jwolak\Documents\FPGA\repositories\RadonMCU\RadonMCUSystemDesign\RadonMCUSystemDesign.sopcinfo</SopcDesignFile>
