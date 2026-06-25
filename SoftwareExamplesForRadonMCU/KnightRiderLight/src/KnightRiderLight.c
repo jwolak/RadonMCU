@@ -38,8 +38,8 @@
 #include "altera_avalon_timer_regs.h"
 #include <stdio.h>
 
-/* LED delay in microseconds (2ms) */
-#define LED_DELAY 100000U /* 100ms delay between LEDs */
+/* LED delay in microseconds (1s) */
+#define LED_DELAY 1000000U /* 1s delay between LEDs */
 
 /* Get elapsed microseconds within current 1ms timer period */
 static uint32_t timer_get_period_us(void)
