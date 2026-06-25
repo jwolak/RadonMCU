@@ -1,0 +1,10 @@
+{
+  "name": "KnightRiderLight",
+  "version": "1.0.0",
+  "description": "Knight Rider light effect for RadonMCU",
+  "main": "src/knight_rider_light.c",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "license": "BSD-3-Clause"
+}
