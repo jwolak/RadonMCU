@@ -142,8 +142,7 @@ ACDS_VERSION := 18.1
 ELF := RadonHelloWorld.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS += hello_world.c
-C_SRCS += KnightRiderLight/KnightRiderLight.c
+C_SRCS := hello_world.c
 CXX_SRCS :=
 ASM_SRCS :=
 
@@ -187,12 +186,14 @@ APP_INCLUDE_DIRS += ../ButtonsDriver
 APP_INCLUDE_DIRS += ../ButtonsDriver/include
 APP_INCLUDE_DIRS += ../LEDDriver/api
 APP_INCLUDE_DIRS += ../LEDDriver/include
-APP_LIBRARY_DIRS := ../EquiniosLogger ../ButtonsDriver ../LEDDriver
-APP_LIBRARY_NAMES := EquiniosLogger ButtonsDriver LedDriver
+APP_INCLUDE_DIRS += ../KnightRiderLight/include
+APP_INCLUDE_DIRS += ../KnightRiderLight/api
+APP_LIBRARY_DIRS := ../KnightRiderLight ../ButtonsDriver ../LEDDriver ../EquiniosLogger
+APP_LIBRARY_NAMES := KnightRiderLight ButtonsDriver LedDriver EquiniosLogger
 
 # Build and link the EquiniosLogger static library before the app link step.
-LDDEPS := ../EquiniosLogger/libEquiniosLogger.a ../ButtonsDriver/libButtonsDriver.a ../LEDDriver/libLedDriver.a
-MAKEABLE_LIBRARY_ROOT_DIRS := ../EquiniosLogger ../ButtonsDriver ../LEDDriver
+LDDEPS := ../EquiniosLogger/libEquiniosLogger.a ../ButtonsDriver/libButtonsDriver.a ../LEDDriver/libLedDriver.a ../KnightRiderLight/libKnightRiderLight.a
+MAKEABLE_LIBRARY_ROOT_DIRS := ../EquiniosLogger ../ButtonsDriver ../LEDDriver ../KnightRiderLight
 
 # Pre- and post- processor settings.
 BUILD_PRE_PROCESS :=

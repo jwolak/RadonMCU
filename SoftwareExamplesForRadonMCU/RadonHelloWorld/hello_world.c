@@ -22,7 +22,7 @@
 #include "altera_avalon_pio_regs.h"
 #include <unistd.h>
 
-#include "KnightRiderLight/KnightRiderLight.h"
+#include "KnightRiderLight.h"
 #include "ButtonsDriver.hpp"
 #include "equinios.hpp"
 
