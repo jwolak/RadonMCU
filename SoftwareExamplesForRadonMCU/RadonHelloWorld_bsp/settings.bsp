@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>2026-06-02 19:31:36</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1780421496317</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>2026-06-25 19:24:38</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1782408278403</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>C:\Users\jwolak\Documents\FPGA\repositories\RadonMCU\SoftwareExamplesForRadonMCU\RadonHelloWorld_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>C:\Users\jwolak\Documents\FPGA\repositories\RadonMCU\RadonMCUSystemDesign\RadonMCUSystemDesign.sopcinfo</SopcDesignFile>
@@ -905,32 +905,38 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>PIO</slaveDescriptor>
+                <slaveDescriptor>TIMER_0</slaveDescriptor>
                 <addressRange>0x00011000 - 0x0001101F</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes>timer</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>PIO</slaveDescriptor>
+                <addressRange>0x00011020 - 0x0001103F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>CLK_PLL</slaveDescriptor>
-                <addressRange>0x00011020 - 0x0001102F</addressRange>
+                <addressRange>0x00011040 - 0x0001104F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>INPUT</slaveDescriptor>
-                <addressRange>0x00011030 - 0x0001103F</addressRange>
+                <addressRange>0x00011050 - 0x0001105F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>CPU_ID</slaveDescriptor>
-                <addressRange>0x00011040 - 0x00011047</addressRange>
+                <addressRange>0x00011060 - 0x00011067</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>JTAG_UART</slaveDescriptor>
-                <addressRange>0x00011048 - 0x0001104F</addressRange>
+                <addressRange>0x00011068 - 0x0001106F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
