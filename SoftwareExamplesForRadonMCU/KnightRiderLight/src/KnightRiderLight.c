@@ -39,7 +39,7 @@
 #include <stdio.h>
 
 /* LED delay in microseconds (2ms) */
-#define LED_DELAY 2000U
+#define LED_DELAY 100000U /* 100ms delay between LEDs */
 
 /* Get elapsed microseconds within current 1ms timer period */
 static uint32_t timer_get_period_us(void)
@@ -63,66 +63,50 @@ static uint32_t timer_get_period_us(void)
 /* Wait for specified microseconds using TIMER_0 polling */
 static uint32_t timer_wait_us(uint32_t microseconds)
 {
-  uint32_t target_ms = (microseconds + 999) / 1000; /* Round up to milliseconds */
+  uint32_t target_ms = (microseconds + 999) / 1000;
   uint32_t ms_count = 0;
   uint32_t prev_period_us = 0;
   int wraparound_count = 0;
 
-  printf("Timer: wait for %lu ms\r\n", target_ms);
-
-  while (ms_count < target_ms && wraparound_count < target_ms * 5) /* Safety limit */
+  while (ms_count < target_ms && wraparound_count < target_ms * 5)
   {
     uint32_t curr_period_us = timer_get_period_us();
 
-    /* Detect wraparound: period drops significantly (e.g., from 900+ to <100) */
     if (prev_period_us > 500 && curr_period_us < 200)
     {
       ms_count++;
-      printf("  MS %lu\r\n", ms_count);
     }
 
     prev_period_us = curr_period_us;
     wraparound_count++;
   }
 
-  printf("Timer: done\r\n");
   return target_ms * 1000;
 }
 
 void run_knight_rider_cycle(struct KnightRiderLight *this)
 {
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 ON\r\n");
   timer_wait_us(LED_DELAY);
   this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
-  printf("LED0 OFF\r\n");
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 ON\r\n");
   timer_wait_us(LED_DELAY);
   this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
-  printf("LED1 OFF\r\n");
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 ON\r\n");
   timer_wait_us(LED_DELAY);
   this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
-  printf("LED2 OFF\r\n");
 
   this->led_driver.set_led3_state(&this->led_driver, LED_ON);
-  printf("LED3 ON\r\n");
   timer_wait_us(LED_DELAY);
   this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
-  printf("LED3 OFF\r\n");
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 ON (return)\r\n");
   timer_wait_us(LED_DELAY);
   this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
-  printf("LED2 OFF (return)\r\n");
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 ON (final)\r\n");
   timer_wait_us(LED_DELAY);
   /* Keep last LED on so there is no dark pause between cycles. */
 }
@@ -130,25 +114,25 @@ void run_knight_rider_cycle(struct KnightRiderLight *this)
 void run_knight_rider_cycle_smooth(struct KnightRiderLight *this)
 {
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 
   this->led_driver.set_led3_state(&this->led_driver, LED_ON);
-  printf("LED3 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  timer_wait_us(LED_DELAY);
 }
 
 static struct KnightRiderLight newKnightRiderLight(void)
@@ -159,7 +143,6 @@ static struct KnightRiderLight newKnightRiderLight(void)
   uint32_t control = ALTERA_AVALON_TIMER_CONTROL_ITO_MSK | ALTERA_AVALON_TIMER_CONTROL_CONT_MSK |
                      ALTERA_AVALON_TIMER_CONTROL_START_MSK;
   IOWR_ALTERA_AVALON_TIMER_CONTROL(TIMER_0_BASE, control);
-  printf("TIMER_0 started with ITO, CONT, START\r\n");
 
   return (struct KnightRiderLight){
       .run_knight_rider_cycle = run_knight_rider_cycle,
