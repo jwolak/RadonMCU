@@ -63,62 +63,67 @@ static uint32_t timer_get_period_us(void)
 /* Wait for specified microseconds using TIMER_0 polling */
 static uint32_t timer_wait_us(uint32_t microseconds)
 {
-  uint32_t start_period_us = timer_get_period_us();
-  uint32_t end_period_us;
-  uint32_t total_ms = 0;
   uint32_t target_ms = (microseconds + 999) / 1000; /* Round up to milliseconds */
+  uint32_t ms_count = 0;
+  uint32_t prev_period_us = 0;
+  int wraparound_count = 0;
 
-  printf("Timer: wait for %lu us (~%lu ms)\r\n", microseconds, target_ms);
+  printf("Timer: wait for %lu ms\r\n", target_ms);
 
-  /* Wait for target number of milliseconds */
-  while (total_ms < target_ms)
+  while (ms_count < target_ms && wraparound_count < target_ms * 5) /* Safety limit */
   {
-    end_period_us = timer_get_period_us();
+    uint32_t curr_period_us = timer_get_period_us();
 
-    /* Detect ms boundary: when timer resets, elapsed goes from ~1000 back to 0 */
-    /* Check for wraparound: if end < start AND start is high, ms boundary crossed */
-    if (end_period_us < start_period_us && start_period_us > 500)
+    /* Detect wraparound: period drops significantly (e.g., from 900+ to <100) */
+    if (prev_period_us > 500 && curr_period_us < 200)
     {
-      total_ms++;
-      printf("  MS %lu passed (wrap: %lu -> %lu)\r\n", total_ms, start_period_us, end_period_us);
-      start_period_us = end_period_us; /* Update reference */
+      ms_count++;
+      printf("  MS %lu\r\n", ms_count);
     }
 
-    /* Also track if we're advancing but haven't wrapped yet */
-    if (end_period_us >= start_period_us)
-    {
-      start_period_us = end_period_us;
-    }
+    prev_period_us = curr_period_us;
+    wraparound_count++;
   }
 
-  printf("Timer: wait complete\r\n");
-  return total_ms * 1000;
+  printf("Timer: done\r\n");
+  return target_ms * 1000;
 }
 
 void run_knight_rider_cycle(struct KnightRiderLight *this)
 {
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED0 ON\r\n");
+  timer_wait_us(LED_DELAY);
   this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
+  printf("LED0 OFF\r\n");
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED1 ON\r\n");
+  timer_wait_us(LED_DELAY);
   this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
+  printf("LED1 OFF\r\n");
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED2 ON\r\n");
+  timer_wait_us(LED_DELAY);
   this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
+  printf("LED2 OFF\r\n");
 
   this->led_driver.set_led3_state(&this->led_driver, LED_ON);
-  printf("LED3 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED3 ON\r\n");
+  timer_wait_us(LED_DELAY);
   this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
+  printf("LED3 OFF\r\n");
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED2 ON (return)\r\n");
+  timer_wait_us(LED_DELAY);
   this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
+  printf("LED2 OFF (return)\r\n");
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED1 ON (final)\r\n");
+  timer_wait_us(LED_DELAY);
   /* Keep last LED on so there is no dark pause between cycles. */
 }
 
