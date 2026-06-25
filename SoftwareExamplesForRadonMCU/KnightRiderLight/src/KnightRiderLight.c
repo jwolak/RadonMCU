@@ -41,61 +41,58 @@
 /* LED delay in microseconds (2ms) */
 #define LED_DELAY 2000U
 
-/* Get current timer value in microseconds */
-static uint32_t timer_get_us(void)
+/* Get elapsed microseconds within current 1ms timer period */
+static uint32_t timer_get_period_us(void)
 {
   /* Trigger snapshot by writing to SNAPH */
   IOWR_ALTERA_AVALON_TIMER_SNAPH(TIMER_0_BASE, 0);
 
-  /* Read snapshot registers */
-  uint32_t snap_h = IORD_ALTERA_AVALON_TIMER_SNAPH(TIMER_0_BASE);
+  /* Read snapshot - shows remaining time to next timeout */
   uint32_t snap_l = IORD_ALTERA_AVALON_TIMER_SNAPL(TIMER_0_BASE);
+  uint32_t snap_h = IORD_ALTERA_AVALON_TIMER_SNAPH(TIMER_0_BASE);
 
-  uint32_t timerValue = (snap_h << 16) | snap_l;
+  uint32_t remaining = (snap_h << 16) | snap_l;
 
-  /* Timer period is 49999 ticks (1ms at 50MHz) */
-  /* Timer counts down from 49999 to 0 */
-  /* Elapsed microseconds in current period = (50000 - timerValue) / 50 */
-  uint32_t elapsed_us = (50000 - (timerValue % 50000)) / 50;
+  /* Timer counts DOWN from 49999, so elapsed = 50000 - remaining */
+  uint32_t elapsed_ticks = 50000 - remaining;
 
-  return elapsed_us;
+  /* Convert to microseconds: 50 ticks = 1us */
+  return elapsed_ticks / 50;
 }
 
-/* Wait for specified microseconds using TIMER_0 */
+/* Wait for specified microseconds using TIMER_0 polling */
 static uint32_t timer_wait_us(uint32_t microseconds)
 {
-  uint32_t start = timer_get_us();
-  uint32_t current;
-  uint32_t elapsed;
-  uint32_t loop_count = 0;
+  uint32_t start_period_us = timer_get_period_us();
+  uint32_t end_period_us;
+  uint32_t total_ms = 0;
+  uint32_t target_ms = (microseconds + 999) / 1000; /* Round up to milliseconds */
 
-  printf("Timer wait start: %lu us for %lu us\r\n", start, microseconds);
+  printf("Timer: wait for %lu us (~%lu ms)\r\n", microseconds, target_ms);
 
-  do
+  /* Wait for target number of milliseconds */
+  while (total_ms < target_ms)
   {
-    current = timer_get_us();
-    loop_count++;
+    end_period_us = timer_get_period_us();
 
-    /* Handle potential timer overflow */
-    if (current >= start)
+    /* Detect ms boundary: when timer resets, elapsed goes from ~1000 back to 0 */
+    /* Check for wraparound: if end < start AND start is high, ms boundary crossed */
+    if (end_period_us < start_period_us && start_period_us > 500)
     {
-      elapsed = current - start;
-    }
-    else
-    {
-      elapsed = (0xFFFFFFFFUL - start) + current;
+      total_ms++;
+      printf("  MS %lu passed (wrap: %lu -> %lu)\r\n", total_ms, start_period_us, end_period_us);
+      start_period_us = end_period_us; /* Update reference */
     }
 
-    /* Safety timeout - 100ms */
-    if (loop_count > 100000000)
+    /* Also track if we're advancing but haven't wrapped yet */
+    if (end_period_us >= start_period_us)
     {
-      printf("TIMEOUT! loops=%lu, elapsed=%lu us\r\n", loop_count, elapsed);
-      break;
+      start_period_us = end_period_us;
     }
-  } while (elapsed < microseconds);
+  }
 
-  printf("Timer wait end: elapsed=%lu us, loops=%lu\r\n", elapsed, loop_count);
-  return elapsed;
+  printf("Timer: wait complete\r\n");
+  return total_ms * 1000;
 }
 
 void run_knight_rider_cycle(struct KnightRiderLight *this)
