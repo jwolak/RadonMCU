@@ -57,30 +57,48 @@ static uint32_t timer_get_period_us(void)
   uint32_t elapsed_ticks = 50000 - remaining;
 
   /* Convert to microseconds: 50 ticks = 1us */
-  return elapsed_ticks / 50;
+  uint32_t result = elapsed_ticks / 50;
+  printf("    period_us=%lu (remaining=%lu)\r\n", result, remaining);
+  return result;
 }
 
-/* Wait for specified microseconds using TIMER_0 polling */
+/* Wait for specified microseconds using TIMER_0 polling on TO (Timeout) bit */
 static uint32_t timer_wait_us(uint32_t microseconds)
 {
   uint32_t target_ms = (microseconds + 999) / 1000;
   uint32_t ms_count = 0;
-  uint32_t prev_period_us = 0;
-  int wraparound_count = 0;
+  uint32_t iteration_count = 0;
 
-  while (ms_count < target_ms && wraparound_count < target_ms * 5)
+  printf("Timer: target=%lu ms, polling TO bit\r\n", target_ms);
+
+  while (ms_count < target_ms)
   {
-    uint32_t curr_period_us = timer_get_period_us();
+    /* Read status register to check TO (Timeout) bit */
+    uint32_t status = IORD_ALTERA_AVALON_TIMER_STATUS(TIMER_0_BASE);
 
-    if (prev_period_us > 500 && curr_period_us < 200)
+    if (iteration_count < 50)
     {
-      ms_count++;
+      printf("  iter=%lu status=0x%lx\r\n", iteration_count, status);
     }
 
-    prev_period_us = curr_period_us;
-    wraparound_count++;
+    /* Check if TO bit is set (indicates period completed) */
+    if (status & ALTERA_AVALON_TIMER_STATUS_TO_MSK)
+    {
+      /* Clear the TO bit by writing 0 to it (or reading it might auto-clear) */
+      IOWR_ALTERA_AVALON_TIMER_STATUS(TIMER_0_BASE, 0);
+      ms_count++;
+      printf("  ms_count=%lu\r\n", ms_count);
+    }
+
+    iteration_count++;
+    if (iteration_count > target_ms * 1000000)
+    {
+      printf("  TIMEOUT! Exiting at iteration %lu\r\n", iteration_count);
+      break;
+    }
   }
 
+  printf("Timer: done after %lu iterations\r\n", iteration_count);
   return target_ms * 1000;
 }
 
