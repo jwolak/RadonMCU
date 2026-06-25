@@ -34,6 +34,7 @@
 #include "equinios.hpp"
 #include "LedDriver.h"
 #include "priv/alt_busy_sleep.h"
+#include "system.h"
 #include "altera_avalon_timer_regs.h"
 #include <stdio.h>
 
@@ -65,52 +66,52 @@ static uint32_t timer_wait_us(uint32_t microseconds)
 void run_knight_rider_cycle(struct KnightRiderLight *this)
 {
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED0 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
   this->led_driver.set_led0_state(&this->led_driver, LED_OFF);
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED1 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
   this->led_driver.set_led1_state(&this->led_driver, LED_OFF);
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED2 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
   this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
 
   this->led_driver.set_led3_state(&this->led_driver, LED_ON);
-  printf("LED3 delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED3 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
   this->led_driver.set_led3_state(&this->led_driver, LED_OFF);
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED2 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
   this->led_driver.set_led2_state(&this->led_driver, LED_OFF);
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED1 delay: %lu us\r\n", timer_wait_us(LED_DELAY));
   /* Keep last LED on so there is no dark pause between cycles. */
 }
 
 void run_knight_rider_cycle_smooth(struct KnightRiderLight *this)
 {
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED0 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED1 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED2 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 
   this->led_driver.set_led3_state(&this->led_driver, LED_ON);
-  printf("LED3 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED3 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 
   this->led_driver.set_led2_state(&this->led_driver, LED_ON);
-  printf("LED2 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED2 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 
   this->led_driver.set_led1_state(&this->led_driver, LED_ON);
-  printf("LED1 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED1 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 
   this->led_driver.set_led0_state(&this->led_driver, LED_ON);
-  printf("LED0 smooth delay: %u us\r\n", timer_wait_us(LED_DELAY));
+  printf("LED0 smooth delay: %lu us\r\n", timer_wait_us(LED_DELAY));
 }
 
 static struct KnightRiderLight newKnightRiderLight(void)
