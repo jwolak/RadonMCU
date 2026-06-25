@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'RadonMCUSystemDesign'
  * SOPC Builder design path: C:/Users/jwolak/Documents/FPGA/repositories/RadonMCU/RadonMCUSystemDesign/RadonMCUSystemDesign.sopcinfo
  *
- * Generated: Tue May 26 14:20:29 CEST 2026
+ * Generated: Thu Jun 25 19:24:40 CEST 2026
  */
 
 /*
@@ -61,6 +61,7 @@
 #include "altera_nios2_gen2_irq.h"
 #include "altera_avalon_jtag_uart.h"
 #include "altera_avalon_sysid_qsys.h"
+#include "altera_avalon_timer.h"
 
 /*
  * Allocate the device storage
@@ -69,6 +70,7 @@
 ALTERA_NIOS2_GEN2_IRQ_INSTANCE ( CPU, CPU);
 ALTERA_AVALON_JTAG_UART_INSTANCE ( JTAG_UART, JTAG_UART);
 ALTERA_AVALON_SYSID_QSYS_INSTANCE ( CPU_ID, CPU_ID);
+ALTERA_AVALON_TIMER_INSTANCE ( TIMER_0, TIMER_0);
 
 /*
  * Initialize the interrupt controller devices
@@ -91,6 +93,7 @@ void alt_irq_init ( const void* base )
 
 void alt_sys_init( void )
 {
+    ALTERA_AVALON_TIMER_INIT ( TIMER_0, TIMER_0);
     ALTERA_AVALON_JTAG_UART_INIT ( JTAG_UART, JTAG_UART);
     ALTERA_AVALON_SYSID_QSYS_INIT ( CPU_ID, CPU_ID);
 }
